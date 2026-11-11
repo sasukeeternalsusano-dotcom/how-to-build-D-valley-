@@ -1,0 +1,975 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>The Making of Danoya Valley</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@600;800;900&family=Caveat:wght@600;700&display=swap">
+<style>
+/* Layout: one scrolling column, each section washed in one chapter's colour, like the game's menu. Single committed night-plum look. */
+:root{
+  --bg:#1a0c24; --bg2:#2a1438; --card:#2c1640; --ink:#fff4e8; --soft:#d9c3e8; --line:#ffffff24;
+  --c1:#ff6f5e; --c2:#ff7eb6; --c3:#2ec4a6; --c4:#a77bff; --c5:#ffb347; --gold:#ffd34d; --dark:#140a1c;
+  --display:"Bungee",Impact,system-ui,sans-serif; --body:"Nunito",system-ui,sans-serif; --hand:"Caveat","Segoe Print",cursive;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-weight:600;line-height:1.55;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+.sec{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:52px}
+.in{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--display);font-weight:400;margin:0;line-height:1.08;text-wrap:balance}
+h2{font-size:clamp(1.6rem,6vw,2.3rem)}
+h3{font-size:1.05rem;letter-spacing:.02em}
+p{margin:0;max-width:62ch}
+.eyebrow{font:900 .74rem var(--body);letter-spacing:.14em;text-transform:uppercase;opacity:.85}
+.hand{font-family:var(--hand);font-size:1.6rem;line-height:1.2}
+.lead{font-size:1.12rem}
+.btn{font:900 .95rem var(--body);border:0;border-radius:999px;padding:11px 18px;cursor:pointer;color:var(--dark);background:var(--gold);box-shadow:0 4px 0 #0005;touch-action:manipulation}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #0005}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:none;border:2px solid var(--line)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.flip:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:18px;min-width:0}
+canvas.px{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
+code,.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82rem}
+.code{background:#0006;border-radius:12px;padding:12px 14px;white-space:pre-wrap;word-break:break-word;color:#ffe9b8;max-width:100%;overflow-x:auto}
+
+/* hero */
+#hero{background:radial-gradient(120% 90% at 50% 0%,#5a1f4a,var(--bg) 70%);padding-top:60px}
+#hero h1{font-size:clamp(2.2rem,10vw,4.2rem);background:linear-gradient(180deg,#ffd57a,#ff6f8f);-webkit-background-clip:text;background-clip:text;color:transparent}
+#hero .hand{color:var(--c3)}
+.strip{width:100%;max-width:520px;aspect-ratio:13/4;border-radius:16px;background:#3b7d3a}
+.by{font-size:.95rem;color:var(--soft)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.stat{background:#ffffff10;border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font:400 1.7rem var(--display);color:var(--gold);font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--soft)}
+
+/* chapters */
+#chapters{background:linear-gradient(180deg,var(--bg),#2a1030)}
+.chs{display:flex;flex-direction:column;gap:12px}
+.ch{border-radius:18px;padding:16px 18px;color:var(--dark);cursor:pointer;text-align:left;border:0;font:inherit;width:100%;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;box-shadow:0 5px 0 #0004}
+.ch .n{font:400 1.8rem var(--display);grid-row:span 2;width:48px;height:48px;border-radius:50%;background:#ffffff55;display:grid;place-items:center}
+.ch .t{font:400 1.1rem var(--display)}
+.ch .s{font-weight:800;font-size:.92rem;opacity:.85}
+.ch .more{grid-column:1/-1;font-weight:700;font-size:.95rem;line-height:1.5;display:none;padding-top:8px}
+.ch.open .more{display:block}
+.ch .hint{grid-column:2;font-size:.75rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;opacity:.6}
+
+/* pixels */
+#pixels{background:linear-gradient(180deg,#2a1030,#13263a)}
+#pixels .eyebrow{color:var(--c3)}
+.build{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.build canvas{width:160px;height:192px;border-radius:14px;background:#2d6b3a}
+.counter{font:400 1.3rem var(--display);color:var(--c3);font-variant-numeric:tabular-nums}
+
+/* characters */
+#characters{background:linear-gradient(180deg,#13263a,#2a1438)}
+#characters .eyebrow{color:var(--c2)}
+.duo{display:flex;gap:12px;align-items:flex-end;justify-content:center;background:#2d6b3a;border-radius:16px;padding:14px}
+.duo canvas{width:120px;height:144px}
+.outfit-name{font:400 1rem var(--display);color:var(--c2);text-align:center}
+.sw{width:34px;height:34px;border-radius:50%;border:3px solid #fff3;cursor:pointer;padding:0}
+.sw.on{border-color:#fff}
+.vb{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
+.vb canvas{width:120px;height:144px;border-radius:14px;background:#2d6b3a}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.fields label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--soft);font-weight:800}
+.fields select,.fields input[type=text],.big-fields input[type=text],.big-fields select,.big-fields textarea{font:700 .95rem var(--body);border-radius:10px;border:1.5px solid var(--line);background:#ffffff12;color:var(--ink);padding:8px 10px;min-width:0;width:100%}
+.fields select option,.big-fields select option{color:#1a0c24}
+input[type=color]{width:100%;height:36px;border-radius:10px;border:1.5px solid var(--line);background:none;padding:2px;cursor:pointer}
+.checks{display:flex;gap:12px;flex-wrap:wrap;font-size:.9rem}
+.checks label{display:flex;gap:6px;align-items:center;flex-direction:row;color:var(--ink)}
+
+/* story */
+#story{background:linear-gradient(180deg,#2a1438,#251040)}
+#story .eyebrow{color:var(--c4)}
+.flips{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px}
+.flip{position:relative;min-height:150px;border-radius:16px;cursor:pointer;perspective:800px;border:0;padding:0;background:none;font:inherit;color:inherit;text-align:left}
+.flip .f,.flip .b{position:absolute;inset:0;border-radius:16px;padding:14px;backface-visibility:hidden;transition:transform .5s;display:flex;flex-direction:column;gap:6px}
+.flip .f{background:#ffffff12;border:1.5px solid var(--line)}
+.flip .b{background:var(--c4);color:var(--dark);transform:rotateY(180deg)}
+.flip.on .f{transform:rotateY(-180deg)}.flip.on .b{transform:rotateY(0)}
+.flip small{font:900 .7rem var(--body);letter-spacing:.1em;text-transform:uppercase;opacity:.75}
+.world{border-left:4px solid var(--c4);padding-left:14px}
+.notes{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.note-dot{width:26px;height:26px;border-radius:50%;background:var(--gold);opacity:.35;transition:opacity .15s,transform .15s}
+.note-dot.on{opacity:1;transform:translateY(6px) scale(1.15)}
+
+/* changes */
+#changes{background:linear-gradient(180deg,#251040,#3a1a10)}
+#changes .eyebrow{color:var(--c5)}
+.ba{display:flex;flex-direction:column;gap:10px}
+.ba .card{display:flex;flex-direction:column;gap:8px}
+.ba .tog{align-self:flex-start;font:900 .75rem var(--body);letter-spacing:.08em;text-transform:uppercase;border-radius:999px;border:0;padding:6px 12px;cursor:pointer;background:var(--c5);color:var(--dark)}
+.ba .was{color:#ffb0a0}.ba .now{color:#b8ffd9}
+
+/* testing + online */
+#testing{background:linear-gradient(180deg,#3a1a10,#1d1530)}
+#testing .eyebrow{color:var(--c1)}
+.steps{counter-reset:s;display:flex;flex-direction:column;gap:10px;padding:0;margin:0;list-style:none}
+.steps li{counter-increment:s;display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:start}
+.steps li::before{content:counter(s);font:400 1rem var(--display);width:32px;height:32px;border-radius:50%;background:var(--c1);color:var(--dark);display:grid;place-items:center}
+
+/* yours */
+#yours{background:radial-gradient(120% 80% at 50% 0%,#3a1f5a,var(--bg) 75%)}
+#yours .eyebrow{color:var(--gold)}
+.big-fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:14px}
+.big-fields .card{display:flex;flex-direction:column;gap:10px}
+.big-fields label{display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--soft);font-weight:800}
+.pv{display:flex;gap:12px;align-items:center}
+.pv canvas{width:72px;height:86px;border-radius:12px;background:#2d6b3a;flex:none}
+.game{display:flex;flex-direction:column;gap:10px;align-items:center}
+.game canvas{width:100%;max-width:640px;aspect-ratio:5/4;border-radius:16px;border:3px solid var(--gold);background:#6fbf5a;touch-action:none}
+.hud{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.hud span{background:#ffffff14;border-radius:999px;padding:5px 12px;font-weight:900}
+.msg{min-height:3.2em;text-align:center;font-weight:800;max-width:640px}
+.ctl{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:640px;gap:12px}
+.dp{display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px);gap:5px}
+.dp button,.ab{font:900 1.2rem var(--body);color:var(--ink);background:#ffffff14;border:2px solid var(--line);border-radius:14px;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none}
+.dp .u{grid-column:2;grid-row:1}.dp .l{grid-column:1;grid-row:2}.dp .r{grid-column:3;grid-row:2}.dp .d{grid-column:2;grid-row:3}
+.ab{width:84px;height:84px;border-radius:50%;background:var(--gold);color:var(--dark);font-family:var(--display);font-size:1.6rem}
+.stage{position:relative;width:100%;max-width:640px}
+.stage canvas{display:block}
+.letter{display:none;position:absolute;left:7%;right:7%;bottom:5%;max-height:58%;overflow:auto;background:#fff8eef2;color:#2a2330;border-radius:6px;padding:clamp(10px,3vw,20px);transform:rotate(-.6deg);box-shadow:0 10px 30px #0008}
+.letter.on{display:block;animation:pop 1s cubic-bezier(.2,1.4,.4,1)}
+.letter p{font:600 clamp(1rem,4vw,1.4rem)/1.3 var(--hand);margin:0 0 4px;max-width:none}
+.letter .x{position:absolute;top:4px;right:6px;border:0;background:none;color:#2a2330;font:900 1rem var(--body);cursor:pointer;padding:4px 8px}
+.places{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px;font-size:.92rem}
+.places label{flex-direction:row!important;align-items:center;gap:6px;color:var(--ink)!important}
+.letter .sig{text-align:right;color:#e0567a}
+@keyframes pop{from{transform:scale(.8) rotate(-3deg);opacity:0}}
+footer{text-align:center;color:var(--soft);font-size:.9rem;padding:30px 16px 50px}
+.ch .more ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+.ch .more b{font-weight:900}
+.extras{display:flex;flex-wrap:wrap;gap:8px}
+.pill{background:#ffffff14;border:1.5px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:800;font-size:.88rem}
+#toolbox{background:linear-gradient(180deg,#2a1030,#10283a)}
+#toolbox .eyebrow{color:var(--c3)}
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px}
+.tool{background:#ffffff10;border-radius:14px;padding:12px 14px;display:grid;grid-template-columns:34px 1fr;gap:2px 10px;align-items:start}
+.tool .e{font-size:1.5rem;grid-row:span 2;line-height:1.2}
+.tool b{font-weight:900}.tool span{font-size:.88rem;color:var(--soft)}
+.tool.me{background:linear-gradient(135deg,#ff7eb633,#a77bff33);border:1.5px solid #ffffff33}
+#pieces{background:linear-gradient(180deg,#10283a,#13263a)}
+#pieces .eyebrow{color:var(--c5)}
+.cake{display:flex;flex-direction:column;gap:6px}
+.layer{border-radius:12px;padding:10px 14px;color:var(--dark);font-weight:800;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;cursor:pointer;border:0;font:inherit;text-align:left;width:100%}
+.layer small{font-weight:700;opacity:.8}
+.layer .ld{display:none;flex-basis:100%;font-weight:700;font-size:.9rem}
+.layer.open .ld{display:block}
+.boxes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px}
+.mbox{background:#ffffff10;border-radius:14px;padding:12px;border-top:4px solid var(--c5)}
+.mbox b{display:block;font-weight:900}.mbox span{font-size:.88rem;color:var(--soft)}
+.pal{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,130px),1fr));gap:10px}
+.pal div{border-radius:14px;padding:12px;color:var(--dark);font-weight:900;min-height:74px;display:flex;flex-direction:column;justify-content:flex-end}
+.pal small{font-weight:700;opacity:.8}
+#feel{background:linear-gradient(180deg,#251040,#12283a)}
+#feel .eyebrow{color:var(--c3)}
+.sfx{display:flex;gap:8px;flex-wrap:wrap}
+.touch{display:flex;flex-wrap:wrap;gap:8px}
+.touch span{background:var(--c2);color:var(--dark);border-radius:999px;padding:6px 12px;font-weight:900;font-size:.88rem}
+.fav{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px}
+.fav div{background:#ffffff10;border-radius:14px;padding:12px;font-size:.92rem}
+.fav b{display:block;font-weight:900;color:var(--c5)}
+.flip.bug .b{background:var(--c1)}
+.flips.tall .flip{min-height:190px}
+#online{background:linear-gradient(180deg,#1d1530,#13263a)}
+#online .eyebrow{color:var(--c3)}
+#online .steps li::before{background:var(--c3)}
+.tips{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px}
+.tips div{background:#ffffff10;border-radius:14px;padding:12px;font-size:.92rem}
+#lessons{background:linear-gradient(180deg,#13263a,#2a1438)}
+#lessons .eyebrow{color:var(--gold)}
+.lessons{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:10px}
+.lessons div{border-radius:16px;padding:14px;color:var(--dark);font-size:.93rem}
+.lessons b{display:block;font:400 1rem var(--display);margin-bottom:4px}
+.surprise{position:absolute;left:12%;right:12%;top:12%;display:none;background:#fff8eef2;color:#2a2330;border-radius:10px;padding:14px;text-align:center;box-shadow:0 10px 30px #0008}
+.surprise.on{display:block;animation:pop .6s cubic-bezier(.2,1.4,.4,1)}
+.surprise .big{font-size:2.4rem;line-height:1}
+.surprise p{font:600 clamp(1rem,4vw,1.35rem)/1.3 var(--hand);margin:6px 0 0;max-width:none}
+.banner{position:absolute;left:0;right:0;top:38%;text-align:center;font:400 clamp(1rem,5vw,1.7rem) var(--display);color:#fff;text-shadow:0 3px 0 #0008,0 0 18px #0008;pointer-events:none;opacity:0;transition:opacity .6s}
+.banner.on{opacity:1}
+.skel{position:relative;width:100%;max-width:420px;margin:0 auto}
+.skel canvas{width:100%;aspect-ratio:1;border-radius:14px;border:3px solid var(--c3);background:#3d6b3a}
+.skdlg{position:absolute;left:6%;right:6%;bottom:5%;background:#fff;color:#222;border-radius:8px;padding:10px 14px;font-weight:800}
+.lbl{display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--soft);font-weight:800}
+.lbl input,.lbl select{font:700 .95rem var(--body);border-radius:10px;border:1.5px solid var(--line);background:#ffffff12;color:var(--ink);padding:8px 10px;min-width:0;width:100%}
+.lbl select option{color:#1a0c24}
+.codehead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between}
+.btn.sm{padding:6px 12px;font-size:.82rem}
+.codebox{margin:0;background:#0d0714;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font:500 .78rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:#ffe9b8;overflow:auto;max-width:100%;max-height:420px;white-space:pre;tab-size:2}
+.codebox.tall{max-height:62vh}
+.codebox.wrap{white-space:pre-wrap;word-break:break-all}
+.codebox .c{color:#8fd6a0}.codebox .s{color:#ffb0c8}.codebox .k{color:#9ec8ff}
+.snips{display:flex;flex-direction:column;gap:10px}
+.snip{background:var(--card);border:1.5px solid var(--line);border-radius:16px;overflow:hidden}
+.snip>button{width:100%;text-align:left;background:none;border:0;color:var(--ink);font:inherit;padding:14px 16px;cursor:pointer;display:flex;gap:10px;align-items:center}
+.snip>button b{font-weight:900}.snip>button span{color:var(--soft);font-size:.85rem}
+.snip .body{display:none;padding:0 16px 16px;flex-direction:column;gap:10px}
+.snip.open .body{display:flex}
+.snip .note{font-size:.92rem;border-left:4px solid var(--c3);padding-left:12px}
+.viewer{display:flex;flex-direction:column;gap:10px}
+#code{background:linear-gradient(180deg,#13263a,#0f1f2e)}
+#code .eyebrow{color:var(--c3)}
+.surpriseme{background:linear-gradient(90deg,var(--c2),var(--c4));color:#fff}
+@media (max-width:420px){.vb{grid-template-columns:1fr}.vb canvas{margin:0 auto}}
+@media (prefers-reduced-motion:reduce){.flip .f,.flip .b{transition:none}}
+</style>
+
+<!-- HERO -->
+<section class="sec" id="hero"><div class="in" style="align-items:center;text-align:center">
+  <span class="eyebrow" style="color:var(--gold)">Behind the scenes</span>
+  <h1>The Making of Danoya Valley</h1>
+  <p class="hand">how a little world for two was built, one tiny square at a time</p>
+  <canvas class="px strip" id="strip" width="208" height="64" aria-label="Doodi and Danoya walking towards each other"></canvas>
+  <p class="lead" style="margin:0 auto">Danoya Valley is a five chapter game I made for Danoya. It runs in any web browser, on a phone or a laptop, and every picture, sound and story beat in it was planned, drawn, written and tested by me. I did the work, and it took over a month from the first idea to the finished game. I used YouTube and Claude AI to assist me along the way.</p>
+  <p class="by">By Doodi · with help from YouTube and Claude AI</p>
+  <div class="stats" style="width:100%">
+    <div class="stat"><b>5</b><span>chapters</span></div>
+    <div class="stat"><b>~190</b><span>versions</span></div>
+    <div class="stat"><b>52</b><span>cutscenes</span></div>
+    <div class="stat"><b>49</b><span>songs</span></div>
+    <div class="stat"><b>28</b><span>dungeon rooms</span></div>
+    <div class="stat"><b>15</b><span>names to find</span></div>
+  </div>
+</div></section>
+
+<!-- CHAPTERS -->
+<section class="sec" id="chapters"><div class="in">
+  <span class="eyebrow" style="color:var(--c2)">Part 1 · The game</span>
+  <h2>Five chapters, five different games</h2>
+  <p>Every chapter plays differently, so the story never settles into one routine. Tap a chapter to open it.</p>
+  <div class="chs" id="chs"></div>
+  <h3 style="color:var(--c2)">Around the chapters</h3>
+  <div class="extras"><span class="pill">🏠 A menu page with music</span><span class="pill">🎬 A cutscene selector to rewatch all 52 scenes</span><span class="pill">💭 A Memories tab</span><span class="pill">🖼️ A memory album of 23 pictures that unlock as she plays</span><span class="pill">📸 Photo mode that hides every button</span><span class="pill">🌙 Easy mode for the fighting chapters</span></div>
+</div></section>
+
+<!-- TOOLBOX -->
+<section class="sec" id="toolbox"><div class="in">
+  <span class="eyebrow">Part 2 · My toolbox</span>
+  <h2>What I built it with</h2>
+  <p>No game engine, no paid software. The whole game is plain web code, so the finished thing is just a folder of files that any browser can open. These are the tools I used, in plain words.</p>
+  <div class="tools" id="tools"></div>
+  <p style="font-size:.95rem">The working folder grew to about 40 code files. Before every change I saved a backup copy of the file I was about to touch (like <code>ch4.bak_v181.js</code>), so with close to 190 versions, any mistake could be undone in seconds.</p>
+</div></section>
+
+<!-- PIECES -->
+<section class="sec" id="pieces"><div class="in">
+  <span class="eyebrow">Part 3 · How the pieces fit</span>
+  <h2>One engine, five chapters stacked on top</h2>
+  <p>Think of the game like a layer cake. At the bottom is one shared "engine" that every chapter uses: the world, the walking, the talking, the saving. Each chapter is a new layer added on top, which can change how things work without touching the layers underneath. That's how Chapter 1 stayed exactly as it was while the later chapters grew. Tap a layer.</p>
+  <div class="cake" id="cake"></div>
+  <div class="card"><b>The stapler.</b> A small script I called <code>buildpub.sh</code> takes the right pieces for each chapter, in the right order, and staples them into one page: <code>chapter1.html</code> to <code>chapter5.html</code>. After every staple, a checker read each page for typos in the code, so a mistake never reached the real game.</div>
+  <h3 style="color:var(--c5)">The memory boxes</h3>
+  <p style="font-size:.95rem">The game remembers things in the browser's own little storage. Some memories travel from one chapter to the next, which is how a choice she makes early can show up at the very end.</p>
+  <div class="boxes" id="boxes"></div>
+  <div class="card"><b>The cutscene selector.</b> Every scene has its own little address, like <code>chapter3.html#cut-funeral</code>. Opening that jumps straight to the scene in a "preview" mode: nothing is saved, minigames finish themselves, and a Back button takes you back to the list on the right chapter. It made testing and rewriting scenes far faster.</div>
+</div></section>
+
+<!-- CODE -->
+<section class="sec" id="code"><div class="in">
+  <span class="eyebrow">Part 4 · Inside the code</span>
+  <h2>What the code actually looks like</h2>
+  <p>Code is just very exact instructions, written in a language the browser understands. You don't need to know how to code to follow this part: every example has a plain English note next to it.</p>
+
+  <h3 style="color:var(--c3)">Start here: a whole game in 40 lines</h3>
+  <p style="font-size:.95rem">Every system in Danoya Valley grew out of a loop like this one: a map, things you can bump into, things you can talk to, and a list of lines played one at a time. This is the complete starting skeleton. It's running live below, so try it: walk with the arrows, and press Talk next to the yellow square. Then change what Hesper says and talk to her again.</p>
+  <div class="skel">
+    <canvas class="px" id="skcv" width="320" height="320" aria-label="The starter skeleton, running"></canvas>
+    <div class="skdlg" id="skdlg" hidden></div>
+  </div>
+  <div class="ctl" style="max-width:420px;margin:0 auto"><div class="dp" aria-label="Move"><button class="u" type="button" data-k="ArrowUp" aria-label="Up">▲</button><button class="l" type="button" data-k="ArrowLeft" aria-label="Left">◀</button><button class="r" type="button" data-k="ArrowRight" aria-label="Right">▶</button><button class="d" type="button" data-k="ArrowDown" aria-label="Down">▼</button></div><button class="ab" id="sk-a" type="button" style="font-size:1rem">Talk</button></div>
+  <div class="card" style="display:flex;flex-direction:column;gap:8px">
+    <label class="lbl">Hesper's first line<input type="text" id="sk-l1" maxlength="90" value="Ah. The farmer. Sit a moment."></label>
+    <label class="lbl">Hesper's second line<input type="text" id="sk-l2" maxlength="90" value="There is a door beneath the hill..."></label>
+    <p style="font-size:.85rem;color:var(--soft)">The code below changes as you type, because the lines are just data inside it.</p>
+  </div>
+  <div class="codehead"><b>index.html</b><button class="btn ghost sm" type="button" id="sk-copy">Copy the code</button></div>
+  <pre class="codebox" id="sk-code"></pre>
+  <p style="font-size:.9rem;color:var(--soft)">To try it on a laptop: open Notepad (or TextEdit in plain text mode), paste this in, save it as <code>index.html</code>, and double click the file.</p>
+  <div class="grid2" id="skexp"></div>
+
+  <h3 style="color:var(--c3)">Real pieces from the finished game</h3>
+  <p style="font-size:.95rem">These are copied straight out of the game. Tap one to open it.</p>
+  <div class="snips" id="snips"></div>
+
+  <h3 style="color:var(--c3)">How I'd build it again, step by step</h3>
+  <ol class="steps">
+    <li><span><b>Write the story backwards.</b> Decide the ending, then the three or four things the ending needs the player to already know, then where each one gets hidden. One page of plan per chapter.</span></li>
+    <li><span><b>Make one screen work:</b> a map, a character that walks, and a talking box. That's the skeleton above.</span></li>
+    <li><span><b>Add one thing at a time and play after each:</b> pressing A on things, then items and a bag, then saving, then a clock, then villagers. Each should work before the next one starts.</span></li>
+    <li><span><b>Write scenes as lists of lines</b>, so the story is easy to read, pull out and rewrite.</span></li>
+    <li><span><b>Split the code into files</b> once one file gets long, and use a build script to staple them into one page per chapter.</span></li>
+    <li><span><b>Save with a version number</b> in the name, and always "try" before reading a save, so a broken save never crashes the game.</span></li>
+    <li><span><b>Add a cutscene selector early.</b> Jumping straight to any scene makes testing much faster.</span></li>
+    <li><span><b>Test with scripts and with your hands</b>, on the phone the player will actually use.</span></li>
+  </ol>
+
+  <h3 style="color:var(--c3)">The whole game's code</h3>
+  <p style="font-size:.95rem">This is every file the finished game is made from, in the order the build script staples them together. Pick one to read it. Lines are long because the code is packed tightly, so scroll sideways or switch on line wrapping.</p>
+  <div class="viewer">
+    <div class="row"><label class="lbl" style="flex:1;min-width:220px">File<select id="cv-file"></select></label><label class="checks" style="align-self:flex-end"><input type="checkbox" id="cv-wrap"> Wrap lines</label></div>
+    <p id="cv-desc" style="font-size:.92rem"></p>
+    <div class="codehead"><b id="cv-name">p1.js</b><span id="cv-meta" style="color:var(--soft);font-size:.85rem"></span><button class="btn ghost sm" type="button" id="cv-copy">Copy</button></div>
+    <pre class="codebox tall" id="cv-code">Loading…</pre>
+  </div>
+  <div class="stats" id="cv-stats"></div>
+</div></section>
+
+<!-- PIXELS -->
+<section class="sec" id="pixels"><div class="in">
+  <span class="eyebrow">Part 5 · How the pictures work</span>
+  <h2>Everything is made of coloured squares</h2>
+  <p>There isn't a single picture file in the whole game. A computer screen is just tiny squares of colour, so I described every character, tree and house as a list of coloured rectangles: "paint a brown box here, a blue box there". The game paints that list sixty times a second.</p>
+  <div class="build">
+    <canvas class="px" id="bcv" width="40" height="48" aria-label="Danoya being drawn one rectangle at a time"></canvas>
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+      <div class="counter" id="bcount">0 rectangles</div>
+      <p>This is Danoya exactly as the game draws her, one rectangle at a time. Her scarf, face, jacket, shoes and even the shadow under her feet are each just a few boxes.</p>
+      <div class="row"><button class="btn" id="bgo" type="button">▶ Draw her again</button><button class="btn ghost" id="bslow" type="button">Slow motion</button></div>
+    </div>
+  </div>
+  <div class="code" aria-label="A real line from the game">R(px+10, py+2, 12, 9, "#a8683f");   // her face: 12 wide, 9 tall, warm brown</div>
+  <p style="font-size:.92rem;color:var(--soft)">That one line is a real line from the game. The numbers say where the box goes and how big it is; the last part is the colour.</p>
+  <div class="grid2">
+    <div class="card"><b>Trees, houses, fences, the stove, the shrine</b> are each a short list of these boxes. Because nothing is a picture file, the whole game stays tiny and any change shows up instantly.</div>
+    <div class="card"><b>Light is soft circles.</b> Lamps, lanterns, campfires and the spirit glow are see through circles that fade at the edges. Night is a dark blue layer laid over the whole map, with the lamps punched through it.</div>
+  </div>
+  <h3 style="color:var(--c3)">Every chapter has its own colours</h3>
+  <div class="pal"><div style="background:var(--c1)">Ch 1 & 2<small>pink and coral, warm and cosy</small></div><div style="background:var(--c3)">Ch 3<small>teal, for the caves</small></div><div style="background:var(--c4)">Ch 4<small>violet, for the spirit world</small></div><div style="background:var(--c5)">Ch 5<small>amber, for the ending</small></div></div>
+  <p style="font-size:.95rem">Small effects carry a lot of the feeling: drifting sakura petals, fireflies at night, the gentle bob of a lantern, and the Name Moth badge slowly shimmering on her coat.</p>
+</div></section>
+
+<!-- CHARACTERS -->
+<section class="sec" id="characters"><div class="in">
+  <span class="eyebrow">Part 6 · Characters and design</span>
+  <h2>From my drawings to the game</h2>
+  <p>I designed Doodi and Danoya before this game even existed: I first drew them for our little farm game in October, square by square, with her scarf, her blue jacket and my beard. When I started Danoya Valley I took those exact drawings and turned each one into instructions the game could repeat, so the two of us look the same in every chapter.</p>
+  <div class="grid2">
+    <div class="card" style="display:flex;flex-direction:column;gap:12px">
+      <h3 style="color:var(--c2)">Danoya's wardrobe</h3>
+      <div class="duo"><canvas class="px" id="odan" width="40" height="48" aria-label="Danoya in the selected outfit"></canvas><canvas class="px" id="odan2" width="40" height="48" aria-label="Danoya seen from the side"></canvas></div>
+      <div class="outfit-name" id="oname">Valley Blues</div>
+      <div class="row" style="justify-content:center"><button class="btn ghost" id="oprev" type="button">◀</button><span id="oidx" style="font-weight:900">1 / 10</span><button class="btn ghost" id="onext" type="button">▶</button></div>
+      <p style="font-size:.92rem">I designed ten outfits for her, and she wears a different one each day in Chapter 1. Each outfit is just a short list of colours: scarf, jacket, top, trousers, shoes, plus extras like a bag, earrings or sparkles.</p>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:12px">
+      <h3 style="color:var(--c2)">My shirt, her choice</h3>
+      <div class="duo"><canvas class="px" id="odoo" width="40" height="48" aria-label="Doodi wearing the chosen shirt colour"></canvas></div>
+      <div class="row" id="shirts" style="justify-content:center"></div>
+      <p style="font-size:.92rem">In Chapter 2 she answers twelve questions about me. When she picks my favourite colour, my shirt (and our farmhouse roof) changes to that colour for the rest of the chapter. Tap a colour to see it.</p>
+    </div>
+  </div>
+  <div class="card" style="display:flex;flex-direction:column;gap:12px">
+    <h3 style="color:var(--c2)">Make a villager the way I did</h3>
+    <p style="font-size:.95rem">The valley has fourteen neighbours. I didn't draw each from scratch: I made one "person" drawing with options, and each neighbour is a recipe of choices. Change the recipe and watch the villager change.</p>
+    <div class="vb">
+      <canvas class="px" id="vcv" width="40" height="48" aria-label="Your villager"></canvas>
+      <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+        <div class="fields">
+          <label>Hair style<select id="v-hs"></select></label>
+          <label>Skin<input type="color" id="v-skin" value="#c9976a"></label>
+          <label>Hair<input type="color" id="v-hair" value="#a8421e"></label>
+          <label>Top<input type="color" id="v-top" value="#b0556a"></label>
+          <label>Trousers<input type="color" id="v-bot" value="#5a4a5a"></label>
+        </div>
+        <div class="checks"><label><input type="checkbox" id="v-glasses"> Glasses</label><label><input type="checkbox" id="v-blush" checked> Blush</label><label><input type="checkbox" id="v-apron" checked> Apron</label><label><input type="checkbox" id="v-hat"> Sun hat</label><label><input type="checkbox" id="v-beard"> Beard</label></div>
+      </div>
+    </div>
+    <div class="code" id="vcode"></div>
+    <p style="font-size:.88rem;color:var(--soft)">That last line is the whole villager. Grandmother Mira in the real game is exactly this kind of one line recipe.</p>
+  </div>
+</div></section>
+
+<!-- STORY -->
+<section class="sec" id="story"><div class="in">
+  <span class="eyebrow">Part 7 · The story</span>
+  <h2>I wrote it backwards</h2>
+  <p>I decided the ending first, then worked out what the player needed to already know when they got there, then hid those clues in the cosy early chapters. Almost nothing in Chapter 1 is filler.</p>
+  <div class="world card"><p><b>The world in a few lines.</b> Long ago, the valley's Keepers kept a road of lanterns from the south cliffs to a Door under the north hill, every lantern lit from one crystal, the Sunheart. The last Keeper could not sleep. His wife, a lantern maker who signed her work with a single letter, S, lit the first lantern ever made for a living person, so that he might rest. When she died, he refused to open the Door, and it has been knocking, politely, ever since. Sixty years ago a Great Storm brought the south cliffs down across the harbour, buried the Southern Gate, stopped the ferry, and took one boy. Since then the valley buys its festival lanterns instead of making them, a fox's name has been forgotten, and the lamps are slowly dimming.</p></div>
+  <h3 style="color:var(--c4)">Clues and where they pay off</h3>
+  <p style="font-size:.95rem">Tap a card to see where each clue comes back.</p>
+  <div class="flips" id="flips"></div>
+  <div class="card notes">
+    <button class="btn" id="play3" type="button">▶ Play the three notes</button>
+    <div class="row" aria-hidden="true"><span class="note-dot" id="nd0"></span><span class="note-dot" id="nd1"></span><span class="note-dot" id="nd2"></span></div>
+    <p style="font-size:.95rem;flex:1;min-width:200px">The lullaby Danoya hums without knowing where she learned it. The same three falling notes play when the bees settle, on her lantern, and when the Door finally answers.</p>
+  </div>
+  <h3 style="color:var(--c4)">My rules for the writing</h3>
+  <div class="grid2">
+    <div class="card"><b>Every clue gets a payoff.</b> If someone mentions something twice, it has to matter later.</div>
+    <div class="card"><b>People only know what they could know.</b> Doodi is new to the valley, so he says "Ferris says…" instead of knowing it himself.</div>
+    <div class="card"><b>Small moments beat big ones.</b> A cup poured for an empty chair, a dog finally bringing back a stick, three knocks on a door.</div>
+    <div class="card"><b>Names are held back.</b> The library never names the last Keeper. His name is scratched out of every page, and you only learn it in Chapter 5.</div>
+    <div class="card"><b>Jokes stay light around grief.</b> Chapter 3 opens on a funeral, so I cut a dozen dungeon jokes that undercut it.</div>
+  </div>
+  <h3 style="color:var(--c4)">How I wrote it and checked it</h3>
+  <ol class="steps" style="--n:var(--c4)">
+    <li><span><b>A one page plan per chapter first:</b> what happens, what the player learns, and which clues get hidden.</span></li>
+    <li><span><b>Lines live inside the scenes.</b> Every line is written as "who says it" plus "what they say", right where it happens, so I could see each line in its moment.</span></li>
+    <li><span><b>Read it like a book.</b> I pulled every line of dialogue into one document per chapter and read it top to bottom at least five times, each time hunting one kind of mistake: the order of events, who knows what, repeated jokes, the tone, and clues that never paid off.</span></li>
+    <li><span><b>Check every fact against every chapter:</b> dates, ages, who was where during the Storm, what the shrine looks like.</span></li>
+    <li><span><b>Play it.</b> Some lines only sound wrong when they pop up in the middle of a scene.</span></li>
+  </ol>
+</div></section>
+
+<!-- FEEL -->
+<section class="sec" id="feel"><div class="in">
+  <span class="eyebrow">Part 8 · Music, sound and the personal touches</span>
+  <h2>49 songs, chosen scene by scene</h2>
+  <p>Every area, date, fight and cutscene has its own song picked for it, so the music changes with the mood instead of looping one tune. I checked the music the same way I checked the words: my test scripts wrote down which song played in every cutscene, and I fixed every mismatch, like the ending credits starting on the calm town theme.</p>
+  <div class="card" style="display:flex;flex-direction:column;gap:10px">
+    <b>The little sounds are made by code, not recorded.</b>
+    <p style="font-size:.95rem">Every bleep, chime and footstep is a tiny tone the game makes on the spot. Tap one to hear it.</p>
+    <div class="sfx"><button class="btn ghost" type="button" data-s="bleep">💬 Talk bleep</button><button class="btn ghost" type="button" data-s="chime">✨ Chime</button><button class="btn ghost" type="button" data-s="step">👣 Footsteps</button><button class="btn ghost" type="button" data-s="heart">💗 Heart up</button><button class="btn ghost" type="button" data-s="notes">🎵 The three notes</button></div>
+    <p style="font-size:.9rem;color:var(--soft)">Phones only allow sound after you tap something, so in the game the music always starts from a button press.</p>
+  </div>
+  <h3 style="color:var(--c2)">The parts only she would understand</h3>
+  <p>These matter more to me than any mechanic.</p>
+  <div class="touch"><span>Her real favourite flowers and snacks are the gifts she loves</span><span>A quiz in Chapter 1 about where she lives</span><span>A date about our two time zones</span><span>A fish named after her</span><span>My nickname for her in Chapter 2</span><span>Her own answers about me shaping how I react to her gifts</span><span>Her "Clinic Shift" outfit with a lanyard</span></div>
+</div></section>
+
+<!-- CHANGES -->
+<section class="sec" id="changes"><div class="in">
+  <span class="eyebrow">Part 9 · What changed along the way</span>
+  <h2>Play it, notice it, fix the cause</h2>
+  <p>Most of the best parts came from playing the game, noticing something felt off, and asking why. Tap to flip between before and after.</p>
+  <div class="ba" id="ba"></div>
+  <h3 style="color:var(--c5)">Things I added late that became favourites</h3>
+  <div class="fav"><div><b>🏮 The lantern maker</b>In Chapter 2, so the lantern at the ending is one she made herself.</div><div><b>🚪 The knock rhythm</b>Knocking on the Door in Chapter 5, three times, in time.</div><div><b>🖼️ The memory album</b>23 pictures that unlock as she plays.</div><div><b>📸 Photo mode</b>Hides every button so she can screenshot the valley.</div><div><b>🦋 The Name Moth badge</b>Earned in Chapter 4, still on her coat in Chapter 5.</div></div>
+</div></section>
+
+<!-- TESTING + ONLINE -->
+<section class="sec" id="testing"><div class="in">
+  <span class="eyebrow">Part 10 · Testing</span>
+  <h2>A robot player, then me</h2>
+  <p>I tested two ways. The robot catches what breaks; my own playing catches what feels wrong.</p>
+  <ol class="steps">
+    <li><span><b>The robot watched all 52 cutscenes.</b> A tool called Playwright opens a real browser and clicks for you. My scripts opened every scene, clicked through every line, took screenshots along the way, wrote down which song played, and checked the Back button went to the right place. The screenshots were stitched into one big sheet per chapter so I could scan a whole chapter in seconds.</span></li>
+    <li><span><b>The robot played the minigames.</b> It tapped exactly at the edge of the green, in the middle, and just outside, to prove the timing was fair.</span></li>
+    <li><span><b>The robot tested single things.</b> For example: stand next to a bench, face it, press A, and check the sitting text appears.</span></li>
+    <li><span><b>The robot pretended to be a phone,</b> with touch, a narrow screen and slow internet, to catch problems that only happen on a phone.</span></li>
+    <li><span><b>Then I played it all on my phone</b> and wrote down anything off in plain words, like "the jar sometimes doesn't count when I'm on the green" or "Doodi and Judy are sitting on a beehive". Every note became a fix in the next version. The joystick and the side quests came straight from that.</span></li>
+  </ol>
+  <h3 style="color:var(--c1)">Bugs worth remembering</h3>
+  <p style="font-size:.95rem">Tap each one to see what was really going on underneath.</p>
+  <div class="flips tall" id="bugs"></div>
+</div></section>
+
+<!-- ONLINE -->
+<section class="sec" id="online"><div class="in">
+  <span class="eyebrow">Part 11 · Putting it online</span>
+  <h2>A real website, for free</h2>
+  <p>The finished game lives on GitHub Pages: 8 page files plus a folder of 49 songs, about 93 MB in total. Anyone with the link can play it on a phone or laptop.</p>
+  <ol class="steps">
+    <li><span><b>Pack it.</b> Copy the finished files into one clean folder. Every page needs two small lines at the top, or emoji turn into gibberish.</span></li>
+    <li><span><b>Make a repository</b> on github.com (an online folder) and set it to Public, which free accounts need for this.</span></li>
+    <li><span><b>Upload the pages</b> with "Add file" then "Upload files", so the menu page sits at the very top.</span></li>
+    <li><span><b>Make the music folder</b> with "Create new file" and type <code>audio/readme.txt</code>. The slash is what makes a folder.</span></li>
+    <li><span><b>Upload the songs 5 to 10 at a time.</b> GitHub quietly drops big batches. One batch of mine failed, ten songs went missing, and some scenes played in silence.</span></li>
+    <li><span><b>Check every song name</b> against the list. Names must match exactly, even capital letters.</span></li>
+    <li><span><b>Turn on Pages</b> in Settings, wait a minute or two for the green tick, and the folder becomes a website with its own link.</span></li>
+  </ol>
+  <div class="tips"><div>💾 Saves live in the browser on that device, so a phone and a laptop each keep their own progress.</div><div>🕶️ Private browsing forgets the save when it closes.</div><div>🔕 A phone's silent switch mutes the music.</div></div>
+</div></section>
+
+<!-- LESSONS -->
+<section class="sec" id="lessons"><div class="in">
+  <span class="eyebrow">Part 12 · What I learned</span>
+  <h2>Lessons I'd keep</h2>
+  <div class="lessons" id="lessonsg"></div>
+</div></section>
+
+<!-- YOURS -->
+<section class="sec" id="yours"><div class="in">
+  <span class="eyebrow">Part 13 · Your turn</span>
+  <h2>Make your own little valley</h2>
+  <p>Design your own little valley: the two of you, the scenery and the weather, which places are on the map, real neighbours from the game, a pet that follows you around, a surprise hidden somewhere, the ending, and the music. Press <b>Build my valley</b> and it becomes a small playable version of the game, just like the real thing: walk, pick flowers, talk, give gifts and fill the hearts. Stuck for ideas? Press <b>Surprise me</b>.</p>
+  <div class="big-fields">
+    <div class="card">
+      <h3 style="color:var(--c3)">👤 You</h3>
+      <div class="pv"><canvas class="px" id="pv-me" width="40" height="48" aria-label="Preview of your character"></canvas><label style="flex:1">Your name<input type="text" id="me-name" maxlength="14" value="Danoya"></label></div>
+      <label>Look<select id="me-look" class="look"></select></label>
+      <div class="fields" id="me-fields"></div>
+      <p style="font-size:.82rem;color:var(--soft)">Pick one of the real outfits from the game, or "Make my own look" to use the colours and hair below.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--c2)">💞 Your person</h3>
+      <div class="pv"><canvas class="px" id="pv-them" width="40" height="48" aria-label="Preview of the other character"></canvas><label style="flex:1">Their name<input type="text" id="them-name" maxlength="14" value="Doodi"></label></div>
+      <label>Look<select id="them-look" class="look"></select></label>
+      <div class="fields" id="them-fields"></div>
+      <p style="font-size:.82rem;color:var(--soft)">For Doodi as he's drawn in the game, his shirt uses the "Top" colour.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--c5)">🏞️ The valley</h3>
+      <label>Name your valley<input type="text" id="v-name" maxlength="22" value="Danoya Valley"></label>
+      <label>Favourite flower<select id="flower"><option value="0">🌻 Sunflower</option><option value="1">🌼 Daffodil</option><option value="2">🪷 Lily</option><option value="3" selected>🌷 Tulip</option></select></label>
+      <label>Scenery<select id="scene"><option value="spring" selected>🌱 Spring meadow</option><option value="summer">☀️ Golden summer</option><option value="autumn">🍂 Autumn leaves</option><option value="winter">❄️ Winter snow</option><option value="seaside">🏖️ Seaside sand</option></select></label>
+      <label>Time of day<select id="tod"><option value="morning">🌅 Morning</option><option value="day" selected>🌤️ Afternoon</option><option value="sunset">🌇 Sunset</option><option value="night">🌙 Night</option></select></label>
+      <label>Weather<select id="weather"><option value="clear">☁️ Clear</option><option value="sakura" selected>🌸 Sakura petals</option><option value="rain">🌧️ Soft rain</option><option value="snow">❄️ Snowfall</option><option value="leaves">🍁 Falling leaves</option><option value="fireflies">✨ Fireflies</option><option value="hearts">💗 Floating hearts</option></select></label>
+      <label>Roof colour of your home<input type="color" id="roof" value="#e0567a"></label>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--c1)">🗺️ Places on the map</h3>
+      <p style="font-size:.88rem;color:var(--soft)">Untick to remove a place, tick to bring it back. Each one says something when you press A next to it.</p>
+      <div class="places" id="places"></div>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--c4)">🏘️ Neighbours</h3>
+      <div class="pv"><canvas class="px" id="pv-nb" width="80" height="48" style="width:120px" aria-label="Preview of your neighbours"></canvas><p style="font-size:.85rem;color:var(--soft)">Real villagers from the game, drawn with their real recipes.</p></div>
+      <label>First neighbour<select id="nb-pre" class="nbsel"></select></label>
+      <label>Their name<input type="text" id="nb-name" maxlength="18" value="Granny Wren"></label>
+      <label>What they say<input type="text" id="nb-line" maxlength="100" value="Flowers listen, you know. Mine bloom facing the lake when your name comes up."></label>
+      <label>Second neighbour<select id="nb2-pre" class="nbsel"></select></label>
+      <label>Their name<input type="text" id="nb2-name" maxlength="18" value="Baker Tom"></label>
+      <label>What they say<input type="text" id="nb2-line" maxlength="100" value="Warm side up. Bread waits for no one."></label>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--c3)">🐾 A companion</h3>
+      <div class="pv"><canvas class="px" id="pv-pet" width="32" height="32" style="width:64px;height:64px" aria-label="Preview of your pet"></canvas><label style="flex:1">Pet<select id="pet"><option value="none">No pet</option><option value="dog" selected>🐶 A dog</option><option value="cat">🐱 A cat</option><option value="bunny">🐰 A bunny</option><option value="duck">🦆 A duckling</option><option value="fox">🦊 A little fox</option></select></label></div>
+      <label>Pet's name<input type="text" id="pet-name" maxlength="14" value="Biscuit"></label>
+      <p style="font-size:.85rem;color:var(--soft)">Your pet follows you everywhere. Press A next to it for a cuddle.</p>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--c2)">💗 Hearts and gifts</h3>
+      <label>Hearts to fill<select id="goal"><option value="3" selected>3 hearts (short and sweet)</option><option value="5">5 hearts (a longer date)</option></select></label>
+      <label>What they say when the last heart fills<input type="text" id="sweet" maxlength="100" value="Stay a while. Look up, the lanterns are coming out."></label>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--gold)">🎁 A hidden surprise</h3>
+      <label>Hide it<select id="sp-where"><option value="none">Don't hide anything</option><option value="flower">In the first flower you pick</option><option value="oak" selected>In the big oak</option><option value="bench">Under the bench</option><option value="shrine">At the shrine</option><option value="pond">In the pond</option><option value="stall">At the bread stall</option><option value="home">At home</option><option value="lamp">On the lamp post</option></select></label>
+      <label>What is it<select id="sp-item"><option value="💌">💌 A love letter</option><option value="💍">💍 A ring</option><option value="📷" selected>📷 A photo of us</option><option value="🎂">🎂 A tiny cake</option><option value="🎟️">🎟️ A ticket for a date</option><option value="⭐">⭐ A wishing star</option><option value="🧸">🧸 A teddy bear</option></select></label>
+      <label>The note with it<input type="text" id="sp-note" maxlength="120" value="Our first photo together. I still look at it every day."></label>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--c4)">🏮 The ending</h3>
+      <label>Lantern paper<select id="lan-col"></select></label>
+      <label>What goes on the lantern<select id="lan-mark"></select></label>
+      <label>Extras</label>
+      <div class="places"><label><input type="checkbox" id="fx-dance" checked> 💃 A happy dance</label><label><input type="checkbox" id="fx-sky" checked> 🏮 A sky full of lanterns</label><label><input type="checkbox" id="fx-fire"> 🎆 Fireworks</label><label><input type="checkbox" id="fx-star" checked> 🌠 Shooting stars</label></div>
+      <label>A secret message for the end<textarea id="secret" rows="4" maxlength="320">You make every day feel like coming home.</textarea></label>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--c3)">🎵 Music</h3>
+      <p style="font-size:.92rem">Ten songs from the real game. The one you pick plays while you walk around your valley.</p>
+      <label>Song<select id="music"></select></label>
+      <div class="row"><button class="btn ghost" id="mprev" type="button">▶ Listen</button></div>
+    </div>
+  </div>
+  <div class="row" style="justify-content:center"><button class="btn" id="buildbtn" type="button" style="font-size:1.1rem;padding:14px 26px">✨ Build my valley</button><button class="btn surpriseme" id="randbtn" type="button">🎲 Surprise me</button></div>
+  <div class="game" id="game">
+    <div class="hud"><span id="g-hearts">♥ 0 / 3</span><span id="g-bag">🌷 0</span><span id="g-who">Danoya & Doodi</span></div>
+    <div class="stage"><div class="banner" id="g-ban"></div><div class="surprise" id="g-sur"><div class="big" id="g-sur-i">📷</div><p id="g-sur-t"></p></div><canvas class="px" id="gcv" width="320" height="256" aria-label="Your little valley game"></canvas><div class="letter" id="g-letter"><button class="x" id="g-lx" type="button" aria-label="Close letter">✕</button><p id="g-letter-to">Danoya,</p><p id="g-letter-body"></p><p class="sig" id="g-letter-from">With love, Doodi</p></div></div>
+    <p class="msg" id="g-msg" aria-live="polite">Walk with the arrows, press A to pick a flower, then give it to Doodi.</p>
+    <div class="ctl"><div class="dp" aria-label="Move"><button class="u" type="button" data-d="0" aria-label="Up">▲</button><button class="l" type="button" data-d="3" aria-label="Left">◀</button><button class="r" type="button" data-d="1" aria-label="Right">▶</button><button class="d" type="button" data-d="2" aria-label="Down">▼</button></div><button class="ab" id="g-a" type="button" aria-label="Action">A</button></div>
+    <div class="row" style="justify-content:center"><button class="btn ghost" id="g-again" type="button">Play again</button><button class="btn ghost" id="g-mute" type="button">♪ Music on</button></div>
+  </div>
+</div></section>
+
+<footer>Made by Doodi, for Danoya · designed, drawn, written and tested by Doodi, with help from YouTube and Claude AI</footer>
+
+<script>
+(function(){
+var $=function(id){return document.getElementById(id)};
+/* ---------- the game's real drawing code ---------- */
+var cx=null,time=0,POSEU=0,CH2=false,OPN_ON=false,S=null,ARMOR=false,DRESS=false,SHIRT="#1f2a4a",OUTI=0,REC=null;
+function R(x,y,w,h,c){if(REC){REC.push([x,y,w,h,c]);return}cx.fillStyle=c;cx.fillRect(Math.round(x),Math.round(y),w,h)}
+var OUTFITS=[
+ {n:"Valley Blues",scarf:"#d9b08c",sh:"#c99f7a",top:"#1f5f78",mid:"#15151a",bot:"#15151a",shoe:"#4a1f2a"},
+ {n:"Garden Blossom",scarf:"#f4f1e6",sh:"#dcd6c4",top:"#d8a7b1",mid:"#d8a7b1",bot:"#c996a3",shoe:"#d9c9b5",belt:"#c58a98"},
+ {n:"Maroon & Daisies",scarf:"#241b24",sh:"#17111a",top:"#8a2f45",mid:"#8a2f45",bot:"#1a1a20",shoe:"#2a2a2a",dots:"#efe0d4"},
+ {n:"Paris Jeans",scarf:"#1d1c24",sh:"#121118",top:"#5a2230",mid:"#5a2230",bot:"#2f4f8a",shoe:"#3a3a3a"},
+ {n:"Hilltop White",scarf:"#c9a27a",sh:"#b08a62",top:"#f4f1ea",mid:"#f4f1ea",bot:"#f4f1ea",shoe:"#6a4a30",bag:"#4a3426"},
+ {n:"Navy & Cream",scarf:"#e6d3c8",sh:"#cdb6a8",top:"#233f7c",mid:"#2a4a92",bot:"#233f7c",shoe:"#2a2a2a",ear:"#5a8be0"},
+ {n:"Clinic Shift",scarf:"#8a7f73",sh:"#6f655a",top:"#17171c",mid:"#17171c",bot:"#17171c",shoe:"#2a2a2a",lan:"#2a5fb8"},
+ {n:"Olive Evening",scarf:"#e4cfb8",sh:"#cdb59a",top:"#3a4128",mid:"#3a4128",bot:"#333a24",shoe:"#8a5a3c",bag:"#d9c09a",dots:"#6f7a48"},
+ {n:"Rose Gala",scarf:"#e7bfb8",sh:"#d3a49c",top:"#d4b5c8",mid:"#e9c9cf",bot:"#d4b5c8",shoe:"#c9a64a",gold:"#e0b53a",spark:1},
+ {n:"Cozy Cocoa",scarf:"#d8c79a",sh:"#bfae82",top:"#6a4034",mid:"#6a4034",bot:"#15151a",shoe:"#1a1a1a"}];
+function curOutfit(){return OUTFITS[OUTI]}
+function person(px,py,d,who,f,sit){
+  var b=f?1:0;py+=b;if(sit)py+=6;
+  R(px+9,py+30,14,3,"#00000030");
+  if(who==="doodi"){
+    var leg=f&&!sit?(f%2?1:-1):0;
+    R(px+10,py+24,5,7+(leg>0?1:0),"#8c8c86");R(px+17,py+24,5,7+(leg<0?1:0),"#8c8c86");R(px+9,py+30,6,3,"#2a2a2a");R(px+17,py+30,6,3,"#2a2a2a");
+    R(px+8,py+13,16,12,SHIRT);R(px+5,py+14,4,9,SHIRT);R(px+23,py+14,4,9,SHIRT);R(px+5,py+22,4,3,"#8a5a3c");R(px+23,py+22,4,3,"#8a5a3c");
+    R(px+10,py+2,12,11,"#8a5a3c");R(px+9,py-2,14,6,"#1a1a1a");R(px+10,py+9,12,5,"#2a1c14");
+    if(d!==0){var ex=d===1?2:d===3?-2:0;R(px+12+ex,py+6,2,2,"#111");R(px+18+ex,py+6,2,2,"#111")}else{R(px+10,py+2,12,10,"#1a1a1a");R(px+10,py+9,12,4,"#2a1c14")}
+  }else{
+    var O=curOutfit();
+    var lg=f&&!sit?(f%2?1:-1):0;R(px+8,py+22,16,10,O.bot);R(px+7,py+26,18,5,O.bot);R(px+9,py+30-(lg>0?2:0),6,3,O.shoe);R(px+17,py+30-(lg<0?2:0),6,3,O.shoe);
+    R(px+8,py+13,16,11,d===0?O.top:O.mid);R(px+8,py+13,5,11,O.top);R(px+19,py+13,5,11,O.top);R(px+5,py+14+(lg>0?1:0),4,9,O.top);R(px+23,py+14+(lg<0?1:0),4,9,O.top);R(px+5,py+22+(lg>0?1:0),4,3,"#a8683f");R(px+23,py+22+(lg<0?1:0),4,3,"#a8683f");
+    if(O.belt)R(px+8,py+22,16,2,O.belt);if(O.bag){R(px+20,py+24,7,6,O.bag);R(px+9,py+14,1,10,O.bag)}if(O.dots){R(px+10,py+16,2,2,O.dots);R(px+15,py+19,2,2,O.dots);R(px+20,py+15,2,2,O.dots);R(px+12,py+23,2,2,O.dots)}
+    if(O.lan&&d!==0){R(px+14,py+13,2,9,O.lan);R(px+13,py+21,4,3,"#f2d34a")}if(O.gold&&d!==0){R(px+12,py+14,8,1,O.gold);R(px+14,py+15,4,1,O.gold)}
+    if(O.spark){var sp0=Math.floor(time*4)%3;R(px+10+sp0*4,py+17,1,1,"#fff");R(px+21-sp0*3,py+20,1,1,"#fff");R(px+13+sp0*2,py+26,1,1,"#fff")}
+    R(px+7,py-3,18,16,O.scarf);R(px+6,py+9,20,8,O.scarf);if(d!==0)R(px+8,py+14,8,6,O.sh);if(O.dots&&O.scarf.charAt(1)<"4"){R(px+8,py-1,2,2,O.dots);R(px+22,py+3,2,2,O.dots);R(px+10,py+11,2,2,O.dots);R(px+20,py+12,2,2,O.dots)}
+    if(d!==0){var ex2=d===1?2:d===3?-2:0;R(px+10,py+2,12,9,"#a8683f");R(px+9,py,14,2,"#1d1d26");R(px+12+ex2,py+5,2,2,"#111");R(px+18+ex2,py+5,2,2,"#111");R(px+11+ex2,py+4,4,1,"#111");R(px+17+ex2,py+4,4,1,"#111");if(O.ear){R(px+8,py+8,2,3,O.ear);R(px+22,py+8,2,3,O.ear)}}
+    else{R(px+8,py-1,16,2,"#1d1d26");R(px+7,py-3,18,16,O.scarf);R(px+10,py+2,12,2,"#00000018");R(px+13,py+6,6,5,"#0000001a");R(px+9,py+11,14,2,"#00000014")}
+  }
+}
+function villager(px,py,d,f,sp,sit){
+  var b=f?1:0;py+=b;if(sit)py+=6;var sk=sp.skin,hr=sp.hair;
+  R(px+9,py+30,14,3,"#00000030");
+  var leg=f&&!sit?(f%2?1:-1):0;
+  if(sit){R(px+7,py+26,18,5,sp.bot);R(px+4,py+27,6,4,sp.bot);R(px+22,py+27,6,4,sp.bot);R(px+2,py+28,4,4,"#2a2a2a");R(px+26,py+28,4,4,"#2a2a2a")}
+  else{R(px+10,py+24,5,7+(leg>0?1:0),sp.bot);R(px+17,py+24,5,7+(leg<0?1:0),sp.bot);R(px+9,py+30,6,3,"#2a2a2a");R(px+17,py+30,6,3,"#2a2a2a")}
+  R(px+8,py+13,16,12,sp.top);if(sp.wide){R(px+6,py+14,2,10,sp.top);R(px+24,py+14,2,10,sp.top)}R(px+5,py+14,4,9,sp.top);R(px+23,py+14,4,9,sp.top);
+  if(sp.puff){R(px+3,py+13,6,7,sp.top);R(px+23,py+13,6,7,sp.top)}
+  R(px+5,py+22,4,3,sk);R(px+23,py+22,4,3,sk);
+  if(sp.apron&&d!==0){R(px+9,py+17,14,9,sp.apron);R(px+11,py+19,3,3,"#f08ca8");R(px+17,py+21,3,3,"#f2c230")}
+  if(sp.scarf){R(px+9,py+11,14,4,sp.scarf)}
+  if(sp.neck&&d!==0){R(px+15,py+14,2,2,sp.neck);R(px+13,py+13,1,1,sp.neck);R(px+18,py+13,1,1,sp.neck)}
+  R(px+10,py+2,12,11,sk);
+  if(sp.hs==="bun"){R(px+8,py-3,16,8,hr);R(px+7,py+1,3,11,hr);R(px+22,py+1,3,13,hr);R(px+12,py-7,8,5,hr);R(px+6,py+8,2,3,hr);R(px+24,py+10,2,3,hr);if(d!==0)R(px+10,py+1,12,2,hr);else R(px+10,py+2,12,10,hr)}
+  else if(sp.hs==="short"){R(px+9,py-1,14,5,hr);if(d===0)R(px+10,py+2,12,10,hr)}
+  else if(sp.hs==="bunG"){R(px+8,py-1,16,6,hr);R(px+12,py-5,8,5,hr);R(px+8,py+3,3,7,hr);R(px+21,py+3,3,7,hr);if(d===0)R(px+10,py+2,12,10,hr)}
+  else if(sp.hs==="long"){R(px+8,py-1,16,6,hr);R(px+7,py+2,4,15,hr);R(px+21,py+2,4,15,hr);if(d===0)R(px+8,py+1,16,17,hr);else R(px+10,py+1,12,2,hr);if(sp.rib){R(px+7,py+6,4,2,sp.rib);R(px+21,py+6,4,2,sp.rib)}}
+  else if(sp.hs==="ponytail"){R(px+9,py-1,14,5,hr);R(px+9,py+2,2,5,hr);R(px+21,py+2,2,5,hr);if(d===0){R(px+10,py+2,12,9,hr);R(px+14,py+10,4,11,hr);if(sp.rib)R(px+13,py+9,6,2,sp.rib)}else{var tx=d===3?px+4:px+24;R(tx,py+3,3,3,hr);R(tx+(d===3?0:1),py+6,3,9,hr);if(sp.rib)R(tx,py+4,4,2,sp.rib)}}
+  else if(sp.hs==="curly"){R(px+7,py-2,18,7,hr);R(px+5,py+1,5,6,hr);R(px+22,py+1,5,6,hr);R(px+9,py-4,5,3,hr);R(px+17,py-4,6,3,hr);R(px+6,py+6,3,4,hr);R(px+23,py+6,3,4,hr);if(d===0)R(px+8,py+2,16,10,hr)}
+  else if(sp.hs==="bald"){R(px+9,py+2,2,7,hr);R(px+21,py+2,2,7,hr);if(d===0){R(px+10,py+5,12,7,hr)}}
+  else if(sp.hs==="spiky"){R(px+9,py-1,14,5,hr);R(px+10,py-4,3,4,hr);R(px+15,py-6,3,6,hr);R(px+20,py-4,3,4,hr);if(d===0)R(px+10,py+2,12,10,hr)}
+  else if(sp.hs==="side"){R(px+9,py-2,14,6,hr);R(px+9,py+2,7,4,hr);R(px+21,py+1,3,5,hr);if(d===0)R(px+10,py+2,12,10,hr)}
+  else if(sp.hs==="sidepart"){R(px+9,py-1,14,4,hr);R(px+9,py+3,2,4,hr);R(px+21,py+3,2,4,hr);R(px+12,py-2,10,1,hr);if(d===0)R(px+10,py+2,12,10,hr)}
+  else if(sp.hs==="cap"){R(px+9,py-1,14,4,sp.cap);if(d!==2)R(px+8,py+1,16,2,sp.cap);if(d===2)R(px+9,py+2,14,2,sp.cap);if(d===0)R(px+10,py+3,12,9,hr)}
+  else if(sp.hs==="scarf"){R(px+7,py-3,18,16,hr);R(px+6,py+9,20,8,hr);if(d!==0){R(px+10,py+2,12,9,sk)}else{R(px+10,py+2,12,9,hr)}}
+  if(sp.hat){R(px+4,py-1,24,3,sp.hat);R(px+9,py-6,14,6,sp.hat);R(px+9,py-2,14,2,"#c0392b")}
+  if(sp.goggles){R(px+9,py-1,14,3,"#4a4a52");R(px+10,py-1,5,3,"#8fd6ff");R(px+17,py-1,5,3,"#8fd6ff")}
+  if(d!==0){var ex=d===1?2:d===3?-2:0;
+    if(sp.glasses){var gx=px+ex;R(gx+10,py+5,6,1,"#3a2a1a");R(gx+10,py+8,6,1,"#3a2a1a");R(gx+10,py+5,1,4,"#3a2a1a");R(gx+15,py+5,1,4,"#3a2a1a");R(gx+17,py+5,6,1,"#3a2a1a");R(gx+17,py+8,6,1,"#3a2a1a");R(gx+17,py+5,1,4,"#3a2a1a");R(gx+22,py+5,1,4,"#3a2a1a");R(gx+16,py+6,1,1,"#3a2a1a")}
+    R(px+12+ex,py+6,2,2,"#111");R(px+18+ex,py+6,2,2,"#111");
+    if(sp.brow){R(px+11+ex,py+4,4,1,sp.brow);R(px+17+ex,py+4,4,1,sp.brow);if(sp.brow2){R(px+11+ex,py+3,4,1,sp.brow);R(px+17+ex,py+3,4,1,sp.brow)}}
+    if(sp.lash){R(px+11+ex,py+5,1,1,"#111");R(px+20+ex,py+5,1,1,"#111")}
+    if(sp.blush){R(px+10+ex,py+8,3,2,"#ee7a7a88");R(px+19+ex,py+8,3,2,"#ee7a7a88")}
+
+    if(sp.wrink){R(px+10+ex,py+4,2,1,"#00000033");R(px+20+ex,py+4,2,1,"#00000033");R(px+11+ex,py+10,1,2,"#00000033");R(px+20+ex,py+10,1,2,"#00000033")}
+    if(sp.mole)R(px+19+ex,py+9,1,1,"#3a2418");
+    if(sp.stub){R(px+10+ex,py+10,12,3,sp.stub)}R(px+14+ex,py+10,4,1,"#00000044");
+    if(sp.stache){R(px+11+ex,py+9,10,3,sp.stache);R(px+9+ex,py+10,3,2,sp.stache);R(px+20+ex,py+10,3,2,sp.stache)}
+    if(sp.beard){R(px+10+ex,py+10,12,5,sp.beard);R(px+12+ex,py+9,8,1,sp.beard)}}
+}
+var ARMOR=false;
+var OUTFITS=[
+ {n:"Valley Blues",e:"💙",scarf:"#d9b08c",sh:"#c99f7a",top:"#1f5f78",mid:"#15151a",bot:"#15151a",shoe:"#4a1f2a"},
+ {n:"Garden Blossom",e:"🌸",scarf:"#f4f1e6",sh:"#dcd6c4",top:"#d8a7b1",mid:"#d8a7b1",bot:"#c996a3",shoe:"#d9c9b5",belt:"#c58a98"},
+ {n:"Maroon & Daisies",e:"🍷",scarf:"#241b24",sh:"#17111a",top:"#8a2f45",mid:"#8a2f45",bot:"#1a1a20",shoe:"#2a2a2a",dots:"#efe0d4"},
+ {n:"Paris Jeans",e:"🗼",scarf:"#1d1c24",sh:"#121118",top:"#5a2230",mid:"#5a2230",bot:"#2f4f8a",shoe:"#3a3a3a"},
+ {n:"Hilltop White",e:"⛰",scarf:"#c9a27a",sh:"#b08a62",top:"#f4f1ea",mid:"#f4f1ea",bot:"#f4f1ea",shoe:"#6a4a30",bag:"#4a3426"},
+ {n:"Navy & Cream",e:"💫",scarf:"#e6d3c8",sh:"#cdb6a8",top:"#233f7c",mid:"#2a4a92",bot:"#233f7c",shoe:"#2a2a2a",ear:"#5a8be0"},
+ {n:"Clinic Shift",e:"🩺",scarf:"#8a7f73",sh:"#6f655a",top:"#17171c",mid:"#17171c",bot:"#17171c",shoe:"#2a2a2a",lan:"#2a5fb8"},
+ {n:"Olive Evening",e:"🌿",scarf:"#e4cfb8",sh:"#cdb59a",top:"#3a4128",mid:"#3a4128",bot:"#333a24",shoe:"#8a5a3c",bag:"#d9c09a",dots:"#6f7a48"},
+ {n:"Rose Gala",e:"✨",scarf:"#e7bfb8",sh:"#d3a49c",top:"#d4b5c8",mid:"#e9c9cf",bot:"#d4b5c8",shoe:"#c9a64a",gold:"#e0b53a",spark:1},
+ {n:"Cozy Cocoa",e:"☕",scarf:"#d8c79a",sh:"#bfae82",top:"#6a4034",mid:"#6a4034",bot:"#15151a",shoe:"#1a1a1a"}
+];
+var ARMOR_D={n:"Sunlit Armour",e:"🛡",scarf:"#e6d3c8",sh:"#cdb6a8",top:"#6f8aa3",mid:"#a9c0d4",bot:"#2f3d4f",shoe:"#3a3f4a",armor:1};
+function curOutfit(){if(ARMOR)return ARMOR_D;var i=0;try{if(typeof S!=="undefined"&&S&&S.day>0)i=(S.day-1)%OUTFITS.length}catch(e){}return OUTFITS[i]}
+function outfitToast(){try{var o=curOutfit();toast(o.e+" Today's fit: "+o.n)}catch(e){}}
+var POSEU=0;
+function paint(canvas,fn){cx=canvas.getContext("2d");cx.clearRect(0,0,canvas.width,canvas.height);fn()}
+
+/* ---------- hero strip ---------- */
+var strip=$("strip");
+function drawStrip(){paint(strip,function(){var t=time;cx.fillStyle="#4f9a49";cx.fillRect(0,0,208,64);for(var i=0;i<26;i++){cx.fillStyle=i%2?"#58a751":"#4f9a49";cx.fillRect(i*8,52,8,12)}
+  var gap=Math.max(0,1-((t%9)/4)),dx=Math.round(48*gap);
+  person(64-dx,16,1,"doodi",gap>0?Math.floor(t*6)%2+1:0,false);person(112+dx,16,3,"danoya",gap>0?Math.floor(t*6)%2+1:0,false);
+  if(gap===0){var k=(t%9-4)/5;cx.globalAlpha=Math.max(0,1-k);cx.font="12px serif";cx.textAlign="center";cx.fillText("❤️",104,12-k*10);cx.globalAlpha=1}})}
+
+/* ---------- chapters ---------- */
+var CH=[["1","The Courting","You play as Doodi","var(--c1)",["<b>A valley of about 64 × 100 squares.</b> Doodi has just moved in.","<b>A real day:</b> the clock starts at 6 am, night falls after 7 pm, some days it rains, and sleeping starts a new day.","<b>Farming:</b> buy seeds for sunflowers, daffodils, lilies and tulips, plant them, water them, pick them.","<b>Fishing</b> in the lake and the sea. Rare fish need the right moment: the moon koi only at night, and the Danoya fish only at night in the rain.","<b>Cooking</b> four recipes at the stove: pizza, Reese's cookies, flower tea and grilled fish.","<b>Courting Danoya:</b> talking, hugging and gifts fill her hearts. Every gift is something she loves, likes or hates. Five dates unlock: The First Picnic, Two Time Zones One Porch, Catching Stars, the Lantern Festival dance, and Come Home to Me.","<b>The village:</b> neighbours with their own daily routines, ten goals with coin rewards, and four side quests: Mr. Rocket's fireworks, Judy's quiz about Danoya, Granny Wren's four blooms, and Captain Ferris's fishing test.","<b>Secrets:</b> Elder Hesper's fire on the South Green, her Little Library of seven books, the shrine, and a hidden cove."]],
+ ["2","Her Turn","You play as Danoya","var(--c2)",["<b>It opens with twelve questions about me:</b> favourite colour, food, snack, drink, music, show, hobby, dislikes, and how I feel loved. Her answers decide which gifts I love and change what I say for the rest of the chapter.","<b>New goals:</b> map the east side, cook four dishes, catch three sea fish, reach 10 hearts.","<b>Four side quests</b> from neighbours who only chatted in Chapter 1: Baker Tom's bread round, Robin's old dog Biscuit, Lio's restless bees, and Ines's glowing lantern carp.","<b>Five new dates:</b> Sunflowers and Kites, Market Day, the Observatory, the Sunset Ferry, and the Southern Gate.","<b>Lantern Night:</b> Hesper teaches the valley to make lanterns again, and she designs her own: a paper colour plus a mark (my name, three falling notes, a sun, a star, a boat, or nothing). That lantern comes back at the very end.","<b>Extras:</b> a sakura season after six hearts, a treehouse, and two new library books."]],
+ ["3","Below the Valley","Both of us, swapping","var(--c3)",["<b>28 rooms under the valley,</b> played as both of us.","<b>Two heroes, one controller:</b> swap between Doodi's sword and Danoya's lantern pulse that stuns. Tell one to wait on a pressure plate while you play the other. Only the one you're controlling can get hurt, and you share 12 hearts.","<b>Every room has a lock:</b> beat every monster, hold the plates down, light every torch, or beat the boss. Puzzles use pushable blocks, slippery ice, keys and timed torches.","<b>The Stone Sentinel,</b> a mini boss halfway down. Behind it, a carving on the wall shows two people sharing one light.","<b>Umbra, the final boss,</b> in two stages. A bond meter fills as you land hits, then Sunbreaker: Danoya lifts the light and Doodi carries it in his sword.","<b>It opens on a funeral,</b> Grandmother Mira's, with the whole village at one long table. Easy mode is there for anyone who wants the story more than the fight."]],
+ ["4","The Thin Place","After dusk, with the spirits","var(--c4)",["<b>After dark the valley overlaps the spirit world.</b> Eight areas linked by a map, and Danoya can see what Doodi can't.","<b>Four main spirits:</b> Mira and her grandson Tobi, the Moth Queen, the fox Misu, and the spirits in Granny Wren's jars.","<b>Side spirits:</b> Robin's dog Biscuit, the old millwright, a child playing hide and seek, and the graves.","<b>A gentle game for each spirit,</b> none of which can be failed: lay Tobi's place at the table in Mira's order, repeat the order the moths wake in, turn each jar lid three times, play fetch with Biscuit, push the mill wheel at the right moment, and find the hiding child by watching which bush shakes.","<b>Fifteen names to say out loud.</b> Hear all fifteen and she earns the Name Moth, a little stained glass badge she keeps wearing.","<b>The finale</b> opens the shrine doors."]],
+ ["5","The Door","A team of five","var(--c5)",["<b>A party of up to five:</b> Doodi, Danoya, Judy, Dan and Mr. Rocket, each with their own attack, speed and skill. You control one and swap any time while the others fight on their own.","<b>The story</b> runs from Dan's beehives on the hill, through the village rally where everyone turns up with a lantern, down to the Floor of the Door and the Warden, and finally the old story behind the Door.","<b>A year later:</b> the Lantern Festival. Her lantern from Chapter 2 hangs on the green, she knocks on the Door in a three knock rhythm game, and if she found all fifteen names, fifteen extra lanterns carry them.","<b>The credits</b> are a pixel montage of the whole game."]]];
+var chs=$("chs");CH.forEach(function(c){var b=document.createElement("button");b.type="button";b.className="ch";b.style.background=c[3];b.innerHTML='<span class="n">'+c[0]+'</span><span class="t">'+c[1]+'</span><span class="s">'+c[2]+'</span><span class="hint">Tap to open</span><span class="more"><ul>'+c[4].map(function(x){return "<li>"+x+"</li>"}).join("")+'</ul></span>';b.setAttribute("aria-expanded","false");b.onclick=function(){var o=b.classList.toggle("open");b.setAttribute("aria-expanded",o?"true":"false");b.querySelector(".hint").textContent=o?"Tap to close":"Tap to open"};chs.appendChild(b)});
+var TOOLS=[["🎨","Me","The ideas, the drawings, the story, the music choices, and every playtest.",1],["📺","YouTube","Tutorials for learning how things are done, from pixel art to putting a website online.",1],["🤖","Claude AI","Help with writing and fixing the code.",1],["🧱","HTML, CSS, JavaScript","The three languages every web page is made of. The whole game is written in them."],["🖌️","The canvas","A blank drawing area in the browser where every square of the game is painted."],["🔊","Web Audio","Makes the little bleeps, chimes and footsteps out of pure tones."],["🎵","MP3 songs","49 of them, picked scene by scene."],["💾","Browser storage","Where saves, settings and choices that carry between chapters live."],["📎","A build script","My \"stapler\": joins the pieces into one page per chapter."],["✅","Node","Checks each chapter for typos in the code before it goes out."],["🤖","Playwright","A robot that opens the game, clicks through it and takes screenshots."],["🖼️","Python","Turns screenshots into contact sheets and album pictures."],["🎬","ffmpeg","Pulls the music out of video files."],["🔤","Google Fonts","The Bungee, Nunito and Caveat letters on the menus."],["🌐","GitHub Pages","Free hosting, so the game has its own website."]];
+TOOLS.forEach(function(t){var d=document.createElement("div");d.className="tool"+(t[3]?" me":"");d.innerHTML='<span class="e">'+t[0]+'</span><b>'+t[1]+'</b><span>'+t[2]+'</span>';$("tools").appendChild(d)});
+var CAKE=[["Chapter 5 layer","party fights, the ending, the credits","var(--c5)","Four files: the five person fighting, the story scenes, the village rally and the credits montage."],["Chapter 4 layer","the spirit world","var(--c4)","One big file: the eight night areas, every spirit, every gentle minigame and the fifteen names."],["Chapter 3 layer","the dungeon","var(--c3)","The 28 rooms, the two heroes, the monsters, the Sentinel, the carving and Umbra."],["Chapter 2 layer","her side of the story","var(--c2)","The quiz about me, her goals, her dates, the four side quests, and Lantern Night."],["Shared extras","used by several chapters","#ffd34d","The album, the lantern drawing, the shrine, the moth badge, photo mode, the joystick and the how to play card."],["The engine","what every chapter stands on","#ff9a7a","The world map and how to draw it · items and saving · talking and menus · controls · cutscenes and music · the villagers and their routines · the big valley, library, benches and beehives · campfires, secrets and the opening."]];
+CAKE.forEach(function(l){var b=document.createElement("button");b.type="button";b.className="layer";b.style.background=l[2];b.innerHTML='<span>'+l[0]+'</span><small>'+l[1]+'</small><span class="ld">'+l[3]+'</span>';b.onclick=function(){b.classList.toggle("open")};$("cake").appendChild(b)});
+var BOXES=[["Chapter saves","One box per chapter, so each keeps its own progress."],["Her answers about me","From the Chapter 2 quiz. Used for gifts, Memories and the album."],["Her lantern","Designed on Lantern Night in Chapter 2. It hangs at the festival in Chapter 5."],["The fifteen names","Found in Chapter 4. They earn the badge and fifteen extra lanterns at the end."],["The album","Which of the 23 memory pictures she has unlocked."],["Game finished","Opens the last Memories and album pages."],["Easy mode","A gentler setting for Chapters 3 and 5."]];
+BOXES.forEach(function(x){var d=document.createElement("div");d.className="mbox";d.innerHTML='<b>📦 '+x[0]+'</b><span>'+x[1]+'</span>';$("boxes").appendChild(d)});
+
+/* ---------- rectangle builder ---------- */
+var bcv=$("bcv"),RECS=[],bi=0,bspeed=1;
+REC=[];OUTI=0;person(4,10,2,"danoya",0,false);RECS=REC;REC=null;
+function bdraw(){paint(bcv,function(){cx.fillStyle="#2d6b3a";cx.fillRect(0,0,40,48);for(var i=0;i<bi&&i<RECS.length;i++){var r=RECS[i];cx.fillStyle=r[4];cx.fillRect(Math.round(r[0]),Math.round(r[1]),r[2],r[3])}if(bi>0&&bi<=RECS.length){var r2=RECS[bi-1];cx.strokeStyle="#ffd34d";cx.lineWidth=.6;cx.strokeRect(r2[0]+.3,r2[1]+.3,r2[2]-.6,r2[3]-.6)}});$("bcount").textContent=Math.min(bi,RECS.length)+(Math.min(bi,RECS.length)===1?" rectangle":" rectangles")+" of "+RECS.length}
+var bt=null;function brun(ms){clearInterval(bt);bi=0;bdraw();bt=setInterval(function(){bi++;bdraw();if(bi>=RECS.length){clearInterval(bt);setTimeout(function(){bi=RECS.length+1;bdraw();$("bcount").textContent=RECS.length+" rectangles. That's her!"},300)}},ms)}
+$("bgo").onclick=function(){brun(90)};$("bslow").onclick=function(){brun(380)};bi=RECS.length+1;bdraw();$("bcount").textContent=RECS.length+" rectangles make Danoya";
+
+/* ---------- wardrobe + shirt ---------- */
+function drawOutfit(){paint($("odan"),function(){person(4,10,2,"danoya",0,false)});paint($("odan2"),function(){person(4,10,1,"danoya",Math.floor(time*4)%2+1,false)});$("oname").textContent=OUTFITS[OUTI].n;$("oidx").textContent=(OUTI+1)+" / 10"}
+$("oprev").onclick=function(){OUTI=(OUTI+9)%10;drawOutfit()};$("onext").onclick=function(){OUTI=(OUTI+1)%10;drawOutfit()};
+var SH=[["Navy","#1f2a4a"],["Red","#d64545"],["Orange","#f08a3c"],["Yellow","#e8c23a"],["Green","#3f9a55"],["Teal","#2a9d8f"],["Blue","#3a6fd8"],["Purple","#7a4fc8"],["Pink","#e07aa8"],["Black","#1d1d22"]];
+SH.forEach(function(c,i){var b=document.createElement("button");b.type="button";b.className="sw"+(i===0?" on":"");b.style.background=c[1];b.setAttribute("aria-label",c[0]);b.onclick=function(){SHIRT=c[1];[].forEach.call($("shirts").children,function(x){x.classList.toggle("on",x===b)})};$("shirts").appendChild(b)});
+
+/* ---------- villager kitchen ---------- */
+var HS=[["bun","Bun"],["bunG","Small bun"],["long","Long"],["short","Short"],["side","Swept fringe"],["sidepart","Side parting"],["ponytail","Ponytail"],["curly","Curly"],["spiky","Spiky"],["bald","Bald"],["scarf","Headscarf"]];
+function fillHS(sel,v){HS.forEach(function(h){var o=document.createElement("option");o.value=h[0];o.textContent=h[1];if(h[0]===v)o.selected=true;sel.appendChild(o)})}
+fillHS($("v-hs"),"bun");
+function vspec(){var s={hs:$("v-hs").value,skin:$("v-skin").value,hair:$("v-hair").value,top:$("v-top").value,bot:$("v-bot").value};if($("v-glasses").checked)s.glasses=1;if($("v-blush").checked)s.blush=1;if($("v-apron").checked)s.apron="#fff4e0";if($("v-hat").checked)s.hat="#e8c35a";if($("v-beard").checked)s.beard=s.hair;s.wide=1;s.lash=1;return s}
+function vcode(){var s=vspec(),parts=[];for(var k in s)parts.push(k+':'+(typeof s[k]==="string"?'"'+s[k]+'"':s[k]));$("vcode").textContent="neighbour = { "+parts.join(", ")+" }"}
+["v-hs","v-skin","v-hair","v-top","v-bot","v-glasses","v-blush","v-apron","v-hat","v-beard"].forEach(function(id){$(id).addEventListener("input",vcode);$(id).addEventListener("change",vcode)});vcode();
+
+/* ---------- story cards ---------- */
+var FL=[["A lullaby nobody can place","Three small falling notes Danoya hums without knowing why. Lio's bees hum them back in Chapter 2.","Chapter 5: the Door answers with the very same three notes."],
+ ["A lantern maker who signed with an S","A library book in Chapter 1, The Last Keeper.","The runes at the Southern Gate in Chapter 2, and the whole story in Chapter 5."],
+ ["\"Always knock, even on your own door\"","A library book, Why We Knock: knock, and pour a cup for the empty chair.","Mira's table in Chapter 3, and the knock at the Door in Chapter 5: \"Thank you for knocking.\""],
+ ["\"A name nobody says goes quiet\"","The last line of The Fox Who Sang.","Chapter 4: the fox Misu, and fifteen forgotten names said out loud."],
+ ["Every soul but one","At Hesper's fire in Chapter 1: Ferris was nine during the Storm, and Ralph keeps 33 stones.","Chapter 5: a candle beside each stone, and one more."],
+ ["The valley buys its lanterns","Chapter 1's festival uses lanterns from a shop.","Chapter 2: Lantern Night teaches everyone to make their own again, and Chapter 5's festival is all handmade."],
+ ["A dog who never fetches","In Chapter 2, Robin says Biscuit has never brought a stick back in thirteen years.","Chapter 4: one more throw, and he finally does."],
+ ["The lantern she designs","Lantern Night in Chapter 2: her colour, her mark.","Chapter 5: it hangs at the festival a year later."],
+ ["Two people, one light","The wall carving behind the Stone Sentinel.","The final boss: Sunbreaker."]];
+FL.forEach(function(f){var b=document.createElement("button");b.type="button";b.className="flip";b.innerHTML='<span class="f"><small>The clue</small><b>'+f[0]+'</b><span>'+f[1]+'</span></span><span class="b"><small>Where it pays off</small><b>'+f[2]+'</b></span>';b.onclick=function(){b.classList.toggle("on")};$("flips").appendChild(b)});
+var AC=null;function tone(fq,at,dur){AC=AC||new (window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain();o.type="sine";o.frequency.value=fq;g.gain.setValueAtTime(.0001,AC.currentTime+at);g.gain.exponentialRampToValueAtTime(.22,AC.currentTime+at+.03);g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+at+dur);o.connect(g);g.connect(AC.destination);o.start(AC.currentTime+at);o.stop(AC.currentTime+at+dur+.05)}
+function three(){try{[392,349,294].forEach(function(f,i){tone(f,i*.45,.9);setTimeout(function(){var d=$("nd"+i);if(d){d.classList.add("on");setTimeout(function(){d.classList.remove("on")},420)}},i*450)})}catch(e){}}
+$("play3").onclick=three;
+function tn(fq,at,dur,type,vol){AC=AC||new (window.AudioContext||window.webkitAudioContext)();var o=AC.createOscillator(),g=AC.createGain(),t0=AC.currentTime+at;o.type=type||"sine";o.frequency.value=fq;g.gain.setValueAtTime(.0001,t0);g.gain.exponentialRampToValueAtTime(vol||.15,t0+.01);g.gain.exponentialRampToValueAtTime(.0001,t0+dur);o.connect(g);g.connect(AC.destination);o.start(t0);o.stop(t0+dur+.05)}
+var SFX={bleep:function(){for(var i=0;i<6;i++)tn(520+(i%3)*60,i*.07,.05,"square",.06)},chime:function(){tn(1047,0,.6);tn(1319,.08,.6);tn(1568,.16,.8)},step:function(){for(var i=0;i<4;i++)tn(140+(i%2)*30,i*.22,.07,"triangle",.2)},heart:function(){tn(523,0,.15,"triangle");tn(659,.1,.15,"triangle");tn(784,.2,.15,"triangle");tn(1047,.3,.35,"triangle")},notes:three};
+[].forEach.call(document.querySelectorAll(".sfx button"),function(b){b.onclick=function(){try{SFX[b.dataset.s]()}catch(e){}}});
+
+/* ---------- before / after ---------- */
+var BA=[["The festival happened twice","Chapter 1 had a Lantern Festival, and Chapter 2 said the festival was ten days away.","Chapter 1's dance is the festival, with shop bought lanterns. Chapter 2's Lantern Night is Hesper teaching the valley to make its own. The Sunset Ferry became a date Doodi arranged with Ferris."],
+ ["The Southern Gate was two places at once","It was described as the harbour mouth the ferry used, and also as a stone door in a cliff.","The Storm brought the cliffs down across the harbour mouth, which stopped the ferry, and buried the Gate in the same rockfall."],
+ ["Ferris \"hadn't sailed since the Storm\"","But he was only nine that night.","His family's ferry hasn't sailed since the Storm."],
+ ["Hesper knew too much","She could tell the whole ancient story, as if she'd been there.","She pieced it together from the shrine's walls, the library and her grandmother."],
+ ["The ultimate attack came out of nowhere","Danoya invented a special move in the middle of the final boss.","After the stone mini boss, a carving on the wall shows two people sharing one light. At the boss, she remembers it."],
+ ["An old note went out of date","A library note said she drew three notes on her lantern.","Once she could design her own lantern, it became: \"She has never once been able to tell me where she learned it.\""],
+ ["A setting gave away a surprise","It said \"Allies fight alone (Chapter 5)\", spoiling who joins the party.","Now it just says \"Easy mode (Chapter 5)\"."],
+ ["Chapter 4 was mostly walking and talking","You found each spirit, read their story, and moved on.","Every spirit got its own small game, and the fifteen names became something to collect, with a badge as the reward."],
+ ["The jar game took four tries to get right","First the green shrank to almost nothing. Then it was too easy. Then a good tap could look like a miss.","A fair green zone, the mark freezes where you tapped, and three turns per jar that get faster and smaller."],
+ ["Biscuit's fetch could be beaten by mashing","Tapping fast won the game without thinking.","A paced moment: the button hides while he runs off, and comes back when he does."],
+ ["Standing still could still hurt you","In Chapter 3, even the hero waiting on a plate could lose you hearts.","Only the hero you're controlling can be hurt."],
+ ["Fighting with arrow buttons felt clumsy","Diagonal moves needed two thumbs on two buttons.","Chapters 3 and 5 got a joystick. The farming chapters kept the arrows, because you walk square by square there."],
+ ["The shrine looked like a house","In Chapters 1 and 2 it had windows and a door like any cottage, and in Chapters 4 and 5 it looked like a temple.","One drawing now makes the same stone shrine with a red roof in every chapter."],
+ ["The lantern dance happened in daylight","The Chapter 1 dance started at 7 pm, when it was still bright.","It moved to 8 pm, under a dark sky."],
+ ["Chapter 2 felt like a rerun","Same valley, same daily routine.","I kept the shared routine on purpose, but gave her four side quests from new neighbours, each setting up something later."]];
+BA.forEach(function(x){var c=document.createElement("div");c.className="card";var s=0;c.innerHTML='<b>'+x[0]+'</b><p class="was">Before: '+x[1]+'</p><p class="now" hidden>After: '+x[2]+'</p><button class="tog" type="button">Show the fix</button>';var t=c.querySelector(".tog");t.onclick=function(){s=1-s;c.querySelector(".was").hidden=!!s;c.querySelector(".now").hidden=!s;t.textContent=s?"Show before":"Show the fix"};$("ba").appendChild(c)});
+var BUGS=[["The title screen flashed when going back to the cutscene list","The menu page had its music packed inside it and weighed over 1 MB, so it loaded slowly.","Moved the music into its own file. The menu dropped to about 30 KB."],
+ ["No music on the website","The music folder never uploaded, then one batch of 10 songs quietly failed.","Made the folder by hand on GitHub and uploaded the songs in small batches."],
+ ["The southern benches couldn't be sat on","They were drawn, but never told the game they were something you can use.","Every bench now registers itself when it's placed."],
+ ["The mill wheel's spokes stuck out past its rim","In Chapter 4's wheel game, the thick wooden rim was counted inside the wheel's size, so the inside was smaller than the spokes were long.","Measured the wheel from the inside, so every spoke ends neatly at the rim."],
+ ["The joystick covered the Slam button","The knob could travel further than its own ring.","Kept the knob inside the ring."],
+ ["The how to play card sat low on phones","It was centred on the screen, not on the game window.","Centred it on the game window."],
+ ["The album pop up never appeared","It called something that didn't exist in that part of the code.","Made it reachable, and saved pop ups until the scene ends."]];
+BUGS.forEach(function(f){var b=document.createElement("button");b.type="button";b.className="flip bug";b.innerHTML='<span class="f"><small>What I saw</small><b>'+f[0]+'</b><span style="font-size:.85rem;opacity:.7">Tap for the real cause</span></span><span class="b"><small>The real cause</small><span>'+f[1]+'</span><small>The fix</small><b>'+f[2]+'</b></span>';b.onclick=function(){b.classList.toggle("on")};$("bugs").appendChild(b)});
+var LES=[["Fix the cause","The Back button flash looked like a navigation bug and was really a heavy menu page. The jar \"not counting\" was a green zone that shrank too far.","var(--c1)"],["New things break old lines","Adding the lantern maker made a library note wrong. After each new feature, I searched the story for anything it contradicted.","var(--c2)"],["Story and play should agree","The fox book says a name nobody says goes quiet, and Chapter 4 makes saying names the game.","var(--c3)"],["Never failable, never mashable","Minigames in a story should be impossible to fail, but still need real input. A miss just asks again.","var(--c4)"],["Test on her phone","Several bugs only showed up on a phone: the card position, the joystick overlap, the music.","var(--c5)"],["Keep every version","Close to 190 versions meant mistakes were cheap to undo.","#8fd6ff"],["Help speeds up building, not deciding","YouTube and Claude AI helped me learn and code faster, but knowing what the game should feel like came from playing it and caring who it was for.","#ffd34d"],["Make it personal","The details only she would recognise matter more than any mechanic.","#ff9fc8"]];
+LES.forEach(function(l){var d=document.createElement("div");d.style.background=l[2];d.innerHTML='<b>'+l[0]+'</b>'+l[1];$("lessonsg").appendChild(d)});
+
+var SNIPS=[["🟥", "Painting one box", "p1.js", "function R(x,y,w,h,c){cx.fillStyle=c;cx.fillRect(Math.round(x),Math.round(y),w,h)}", "This is the most used line in the whole game. Give it where the box goes (x, y), how big it is (w, h) and a colour (c), and it paints that box. Every tree, house and person is made of these."], ["👵", "A neighbour is one line", "cast.js", "VSPEC.mira={skin:\"#c9976a\",hair:\"#a8421e\",hs:\"bun\",top:\"#b0556a\",bot:\"#5a4a5a\",apron:\"#fff4e0\",blush:1,wide:1,lash:1};", "Grandmother Mira's whole look: skin colour, hair colour, a bun, a rose top, an apron, blush and eyelashes. The villager drawing reads this recipe and paints her."], ["👗", "An outfit is one line", "p1.js", "{n:\"Valley Blues\",e:\"💙\",scarf:\"#d9b08c\",sh:\"#c99f7a\",top:\"#1f5f78\",mid:\"#15151a\",bot:\"#15151a\",shoe:\"#4a1f2a\"},", "One of Danoya's ten outfits. Each name after a colon is a part of her (scarf, top, trousers, shoes) and each # code is a colour."], ["💬", "How people talk", "p3.js + ch2sq.js", "async function seq(a){for(var i=0;i<a.length;i++)await say(a[i][0],a[i][1])}\n\n// used like this:\n  else await seq([[\"Elder Hesper\",\"Tom's bread. He has left me a loaf every week for thirty years and never once knocked. He leaves it on the step.\"],[\"Elder Hesper\",\"Thank him for me. Tell him I said it the way he likes, which is not at all.\"],[\"\",\"She breaks off the heel and eats it first.\"]]);", "A scene is just a list of [who, what they say]. The seq helper plays them one after another and waits for a tap between each. That's why the story was easy to read and rewrite."], ["🎏", "A gift she loves", "p2.js + p3.js", "koi:{n:\"Moon koi\",e:\"🎏\",p:300,k:\"fish\",g:\"love\"}\n\n  if(g===\"love\"){S.lovedGifts++;N.emote=\"💖\";addFP(80);if(id===\"fl1\"&&!CH2){await say(\"Danoya\",\"A daffodil. You remembered. It is my favourite, and now I am blushing in front of a flower.\");addFP(40)}if(id===\"koi\"||id===\"dfish\"){await say(\"Danoya\",\"Is this... a fish named after me? You absolute weirdo. I love it.\");addFP(40)}}els …", "Every item knows what it's worth and whether she loves, likes or hates it (the g part). When she gets a loved gift, her hearts jump, and the moon koi gets its own line."], ["🕰️", "The clock", "p4.js", "      S.min+=dt*1.25;\n      if(S.min>=1440&&S.warned!==S.day){S.warned=S.day;talking=true;midnightAlert().then(function(){talking=false})}\n      else if(S.min>=1500){talking=true;passOut().then(function(){talking=false})}\n      else if(S.min>=1470&&S.warn2!==S.day){S.warn2=S.day;toast(\"⏰ 12:30 am! Only 30 minutes left to get to bed!\");sfxPlay(\"bad\")}", "Every moment, the clock moves forward a little. 1440 minutes is midnight. Stay up past it and you get a warning; past 1 am, you pass out."], ["💾", "Saving and loading", "p2.js", "function save(){try{S.plots=plots;S.mw=MW;ls(SAVEKEY,JSON.stringify(S))}catch(e){}}\nfunction load(){try{var j=JSON.parse(ls(SAVEKEY)||\"null\");if(j&&j.v===1){S=j;plots=S.plots||{};var ow=j.mw||64;if(ow!==MW){var np={};for(var k in plots){var kx=k%ow,ky=(k/ow)|0;np[ky*MW+kx]=plots[k]}plots=np;S.plots=np}S.mw=MW;return true}}catch(e){}return fal …", "Saving turns the whole game state into text and keeps it in the browser. Loading reads it back. Both are wrapped in try, so a broken save can never crash the game."], ["🧩", "Adding without breaking", "ch2sq.js", "var _vt2=vnTalkTo;\nvnTalkTo=function(v){\n  if(!CH2)return _vt2(v);\n  var H={pim:sqTom,nell:sqRobin,lio:sqLio,ines:sqInes}[v.id],D=(v.id===\"mira\"||v.id===\"hesper\");\n  if(!H&&!D)return _vt2(v);", "This is how Chapter 2 added side quests without touching Chapter 1. It keeps the old talk function (_vt2), then wraps a new one around it. In Chapter 1 it simply calls the old one."], ["🚪", "The three knocks", "ch5c.js", "    var n=0,good=0,t0=0,dur=1250,raf=0,live=false,FREQ=[392,349,294];\n    function finish(){document.removeEventListener(\"keydown\",key,true);msg.textContent=good===3?\"Three knocks, exactly in time.\":good>0?\"Close enough. The Door is patient.\":\"Not in time at all. The Door doesn't mind. It is polite.\";btn.disabled=true;setTimeout(function(){hideOv();res(good)},1900)}", "The knock game at the Door. FREQ holds the three falling notes, G, F and D (392, 349 and 294 vibrations a second), played one per knock. Notice there's no fail: early or late, it answers anyway."], ["📎", "The stapler", "buildpub.sh", "LIST1=\"cutexit.js extras.js p1.js p2.js decor_it.js trk_c1.js opn_c1.js vict.js aud.js scene.js p3.js house.js npc.js cast.js secret.js expand.js ch2sq.js camp.js opening.js p4.js cutsel.js qs.js phot …\n(echo \"$pre\"; cat head.html theme1.html lay.html; echo '<script>'; cat $LIST1; echo '<\/script>') > pub/chapter1.html", "The list of files that make Chapter 1, and the command that staples them into chapter1.html."], ["🕹️", "The joystick", "joy.js", "function upd(e){var r=dp.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,R=r.width*.27;\n  var dx=e.clientX-cx,dy=e.clientY-cy,d=Math.hypot(dx,dy);\n  if(d>R){dx=dx*R/d;dy=dy*R/d;d=R}\n  jk.style.transform=\"translate(\"+dx.toFixed(1)+\"px,\"+dy.toFixed(1)+\"px)\";\n  var m=d/R;if(m<.2){J.x=J.y=0;setHeld(0,0);return}\n  var mm=Math.min(1,(m-.2)/.65),ux=dx/d,uy=dy/d;\n  /* snap gently to straight lines so pushing blocks and walking corridors stays clean */\n  if(Math.abs(ux)<.26){ux=0;uy=uy>0?1:-1}else if(Math.abs(uy)<.26){uy=0;ux=ux>0?1:-1}\n  J.x=ux*mm;J.y=uy*mm;setHeld(J.x,J.y)}", "Measures how far your thumb is from the middle, keeps the knob inside its ring, and gently snaps nearly straight pushes to perfectly straight, so pushing blocks stays easy."]];
+/* ---------- inside the code ---------- */
+function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function hl(t){return esc(t).replace(/(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*')|\b(function|var|let|const|if|else|return|for|async|await|new|try|catch)\b/g,function(m,c,s,k){return c?'<span class="c">'+c+'</span>':s?'<span class="s">'+s+'</span>':'<span class="k">'+k+'</span>'})}
+function copyText(t,btn){var done=function(){var o=btn.textContent;btn.textContent="Copied ✓";setTimeout(function(){btn.textContent=o},1400)};try{navigator.clipboard.writeText(t).then(done,function(){btn.textContent="Select and copy by hand"})}catch(e){btn.textContent="Select and copy by hand"}}
+function skCode(){var l1=$("sk-l1").value.replace(/'/g,"\\'"),l2=$("sk-l2").value.replace(/'/g,"\\'");return "<!doctype html>\n<html>\n<head>\n  <meta charset=\"utf-8\">\n  <title>My Valley</title>\n  <style>\n    body { margin: 0; background: #222; display: grid; place-items: center; height: 100vh; font-family: sans-serif }\n    #dlg { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #fff; padding: 10px 16px; border-radius: 8px }\n  </style>\n</head>\n<body>\n<canvas id=\"cv\" width=\"320\" height=\"320\"></canvas>\n<div id=\"dlg\" hidden></div>\n<script>\nconst T = 32, cx = cv.getContext('2d');           // each square is 32 pixels\nconst MAP = ['##########', '#........#', '#..N.....#', '#........#', '#........#',\n             '#........#', '#....P...#', '#........#', '#........#', '##########'];\nlet P = {x: 5, y: 6}, N = {x: 3, y: 2}, talking = false, lines = [];\nMAP.forEach((r, y) => [...r].forEach((c, x) => { if (c === 'P') P = {x, y}; }));\nconst R = (x, y, w, h, c) => { cx.fillStyle = c; cx.fillRect(x, y, w, h); };\nconst solid = (x, y) => MAP[y][x] === '#' || (x === N.x && y === N.y);\n\nfunction draw() {                                  // paint everything, 60 times a second\n  MAP.forEach((r, y) => [...r].forEach((c, x) => R(x * T, y * T, T, T, c === '#' ? '#3d6b3a' : '#8fd17a')));\n  R(N.x * T + 6, N.y * T + 4, 20, 26, '#ffd34d');   // the villager\n  R(P.x * T + 6, P.y * T + 4, 20, 26, '#e0567a');   // the player\n  requestAnimationFrame(draw);\n}\nfunction say(list) { lines = list.slice(); talking = true; advance(); }\nfunction advance() {                               // show the next line, or close the box\n  if (!lines.length) { talking = false; dlg.hidden = true; return; }\n  const [who, text] = lines.shift(); dlg.hidden = false; dlg.textContent = who + ': ' + text;\n}\naddEventListener('keydown', e => {\n  if (e.key === ' ') { if (talking) return advance();\n    if (Math.abs(P.x - N.x) + Math.abs(P.y - N.y) === 1)\n      say([['Hesper', '"+l1+"'], ['Hesper', '"+l2+"']]); }\n  if (talking) return;\n  const d = {ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0]}[e.key];\n  if (d && !solid(P.x + d[0], P.y + d[1])) { P.x += d[0]; P.y += d[1]; }\n});\ndraw();\n<\/script>\n</body>\n</html>"}
+function skShow(){$("sk-code").innerHTML=hl(skCode())}
+["sk-l1","sk-l2"].forEach(function(id){$(id).addEventListener("input",skShow)});skShow();
+$("sk-copy").onclick=function(){copyText(skCode(),$("sk-copy"))};
+var SKX=[["The map","Each line of MAP is a row of the world. # is a wall, . is grass, N is where the villager stands, P is where you start. Change the letters and the world changes."],["R, the painter","The same box painting helper the real game uses. Three calls paint the grass, the villager and you."],["draw()","Paints the whole picture, then asks the browser to call it again on the next frame. That loop is what makes a game move."],["say() and advance()","A conversation is a list of [who, what]. Each press of Space shows the next line, until the list is empty and the box closes."],["The key listener","Listens for the arrow keys and Space. Before moving, it asks solid(): you can't walk into a wall or through the villager."]];
+SKX.forEach(function(x){var d=document.createElement("div");d.className="card";d.innerHTML="<b>"+x[0]+".</b> "+x[1];$("skexp").appendChild(d)});
+(function(){var c=$("skcv"),g=c.getContext("2d"),T2=32,MAP=["##########","#........#","#..N.....#","#........#","#........#","#........#","#....P...#","#........#","#........#","##########"],P={x:5,y:6},N={x:3,y:2},talking=false,lines=[];
+  function R2(x,y,w,h,col){g.fillStyle=col;g.fillRect(x,y,w,h)}
+  function solid(x,y){return MAP[y][x]==="#"||(x===N.x&&y===N.y)}
+  function draw(){MAP.forEach(function(r,y){r.split("").forEach(function(ch,x){R2(x*T2,y*T2,T2,T2,ch==="#"?"#3d6b3a":"#8fd17a")})});R2(N.x*T2+6,N.y*T2+4,20,26,"#ffd34d");R2(P.x*T2+6,P.y*T2+4,20,26,"#e0567a");requestAnimationFrame(draw)}
+  function advance(){var d=$("skdlg");if(!lines.length){talking=false;d.hidden=true;return}var l=lines.shift();d.hidden=false;d.textContent=l[0]+": "+l[1]}
+  function key(k){if(k===" "){if(talking)return advance();if(Math.abs(P.x-N.x)+Math.abs(P.y-N.y)===1){lines=[["Hesper",$("sk-l1").value],["Hesper",$("sk-l2").value]];talking=true;advance()}return}if(talking)return;var d={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[k];if(d&&!solid(P.x+d[0],P.y+d[1])){P.x+=d[0];P.y+=d[1]}}
+  [].forEach.call(document.querySelectorAll("#code .dp button"),function(b){b.addEventListener("pointerdown",function(e){e.preventDefault();key(b.dataset.k)})});
+  $("sk-a").addEventListener("pointerdown",function(e){e.preventDefault();key(" ")});
+  document.addEventListener("keydown",function(e){var tg=(e.target&&e.target.tagName)||"";if(tg==="INPUT"||tg==="TEXTAREA"||tg==="SELECT")return;var r=c.getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key)>-1){if(e.key===" "&&tg==="BUTTON")return;e.preventDefault();key(e.key)}});
+  draw()})();
+SNIPS.forEach(function(s,i){var d=document.createElement("div");d.className="snip";d.innerHTML='<button type="button" aria-expanded="false"><span style="font-size:1.4rem">'+s[0]+'</span><span style="display:flex;flex-direction:column;gap:2px;color:var(--ink)"><b>'+s[1]+'</b><span>from '+s[2]+'</span></span></button><div class="body"><pre class="codebox wrap">'+hl(s[3])+'</pre><p class="note">'+s[4]+'</p></div>';var bt=d.querySelector("button");bt.onclick=function(){var o=d.classList.toggle("open");bt.setAttribute("aria-expanded",o?"true":"false")};$("snips").appendChild(d)});
+var CODEF=[["buildpub.sh","The stapler: which files go into which chapter, in which order."],["head.html","The shared top of every chapter page: the styles, buttons and screen layout."],["lay.html","The game window and the on screen buttons."],["cutexit.js","Remembers where to go back to when you leave a cutscene preview."],["extras.js","Album unlocks, and the lantern, shrine and moth badge drawings."],["p1.js","The world: the map, the tiles, and drawing every tree, house and person. Doodi and Danoya's designs live here."],["p2.js","Items, the bag, the game's memory, saving and loading."],["decor_it.js","Posters and decorations for the house."],["trk_c1.js","Which song plays where in Chapter 1."],["trk_c2.js","Which song plays where in the later chapters."],["aud.js","The music player and the volume setting."],["scene.js","Cutscene staging: picnic blankets, chairs, sitting, sparkles."],["p3.js","Talking, menus, goals, gifts, dates and pop ups."],["house.js","Inside the house: the TV, the stove, the bed."],["npc.js","The villagers and the Chapter 1 side quests."],["cast.js","Ten more neighbours, each with their own story."],["secret.js","The secret chapter that unlocks after every goal is done."],["expand.js","The bigger valley: the library and its books, benches, beehives, shops."],["ch2sq.js","Chapter 2's four side quests."],["camp.js","Hesper's fire night and Lantern Night."],["opening.js","The anime style opening montages, synced to the song."],["p4.js","Controls, pressing A on things, the main loop, the clock and sleeping."],["cutsel.js","The Chapter 1 cutscene selector."],["ch2.js","Chapter 2: the quiz about me, her goals, her side of the valley."],["ch2ev.js","Chapter 2's dates and minigames."],["ch3.js","Chapter 3: the dungeon, the two heroes, the Sentinel, the carving and Umbra."],["ch4.js","Chapter 4: the spirit world, every spirit and minigame, the fifteen names."],["ch5a.js","Chapter 5: the party fighting engine."],["ed5h.js","Colour helpers for Chapter 5's ending."],["ch5b.js","Chapter 5: drawing the heroes and enemies."],["ch5c.js","Chapter 5: the story, the Warden and the three knocks."],["ch5d.js","Chapter 5: the opening and the ending credits."],["qs.js","The how to play card."],["photo.js","Photo mode."],["joy.js","The joystick for Chapters 3 and 5."],["exitbtn.js","The exit button in the later chapters."],["tail.js","Small finishing touches for phones."]];
+CODEF.forEach(function(f,i){var o=document.createElement("option");o.value=i;o.textContent=f[0];if(f[0]==="p1.js")o.selected=true;$("cv-file").appendChild(o)});
+var CVC={},cvSeq=0;
+function cvLoad(){var f=CODEF[+$("cv-file").value],my=++cvSeq;$("cv-name").textContent=f[0];$("cv-desc").textContent=f[1];
+  function show(t){if(my!==cvSeq)return;var n=t.split("\n").length;$("cv-meta").textContent=n+" lines · "+(t.length/1024).toFixed(1)+" KB";$("cv-code").innerHTML=t.length>60000?esc(t):hl(t);$("cv-code").scrollTop=0}
+  if(CVC[f[0]])return show(CVC[f[0]]);$("cv-code").textContent="Loading…";$("cv-meta").textContent="";
+  fetch("code/"+f[0]).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){CVC[f[0]]=t;show(t)}).catch(function(){if(my===cvSeq)$("cv-code").textContent="Couldn't load this file right now. Try picking it again."})}
+$("cv-file").addEventListener("change",cvLoad);$("cv-wrap").addEventListener("change",function(){$("cv-code").classList.toggle("wrap",$("cv-wrap").checked)});
+$("cv-copy").onclick=function(){var f=CODEF[+$("cv-file").value][0];if(CVC[f])copyText(CVC[f],$("cv-copy"))};
+var cvStarted=false;try{new IntersectionObserver(function(es,ob){if(es.some(function(e){return e.isIntersecting})){ob.disconnect();cvStarted=true;cvLoad()}},{rootMargin:"400px"}).observe($("cv-code"))}catch(e){cvLoad()}
+[["37","code files"],["~5,000","lines of code"],["~670 KB","of code in total"],["1,600+","functions"]].forEach(function(s){var d=document.createElement("div");d.className="stat";d.innerHTML="<b>"+s[0]+"</b><span>"+s[1]+"</span>";$("cv-stats").appendChild(d)});
+
+/* ---------- make your own ---------- */
+function charFields(prefix,def){var w=$(prefix+"-fields");w.innerHTML='<label>Hair style<select id="'+prefix+'-hs"></select></label><label>Skin<input type="color" id="'+prefix+'-skin" value="'+def.skin+'"></label><label>Hair or scarf<input type="color" id="'+prefix+'-hair" value="'+def.hair+'"></label><label>Top<input type="color" id="'+prefix+'-top" value="'+def.top+'"></label><label>Trousers<input type="color" id="'+prefix+'-bot" value="'+def.bot+'"></label><div class="checks" style="grid-column:1/-1"><label><input type="checkbox" id="'+prefix+'-glasses"'+(def.glasses?" checked":"")+'> Glasses</label><label><input type="checkbox" id="'+prefix+'-blush"'+(def.blush?" checked":"")+'> Blush</label><label><input type="checkbox" id="'+prefix+'-beard"'+(def.beard?" checked":"")+'> Beard</label><label><input type="checkbox" id="'+prefix+'-hat"'+(def.hat?" checked":"")+'> Sun hat</label></div>';fillHS($(prefix+"-hs"),def.hs)}
+charFields("me",{hs:"scarf",skin:"#a8683f",hair:"#d9b08c",top:"#1f5f78",bot:"#15151a",blush:1});
+charFields("them",{hs:"short",skin:"#8a5a3c",hair:"#1a1a1a",top:"#1f2a4a",bot:"#8c8c86",beard:1});
+function cspec(p){var s={hs:$(p+"-hs").value,skin:$(p+"-skin").value,hair:$(p+"-hair").value,top:$(p+"-top").value,bot:$(p+"-bot").value,lash:1};if($(p+"-glasses").checked)s.glasses=1;if($(p+"-blush").checked)s.blush=1;if($(p+"-beard").checked)s.beard=s.hs==="scarf"?"#2a1c14":s.hair;if($(p+"-hat").checked)s.hat="#e8c35a";return s}
+["me-look","them-look"].forEach(function(id,j){var sel=$(id);var o=document.createElement("option");o.value="custom";o.textContent="🎨 Make my own look";sel.appendChild(o);OUTFITS.forEach(function(f,i){var o2=document.createElement("option");o2.value="dan"+i;o2.textContent="Danoya · "+f.n;if(j===0&&i===0)o2.selected=true;sel.appendChild(o2)});var o3=document.createElement("option");o3.value="doodi";o3.textContent="Doodi, as drawn in the game";if(j===1)o3.selected=true;sel.appendChild(o3)});
+function look(p){var v=$(p+"-look").value;if(v.indexOf("dan")===0)return {k:"dan",o:+v.slice(3)};if(v==="doodi")return {k:"doo",shirt:$(p+"-top").value};return {k:"v",sp:cspec(p)}}
+function drawChar(px,py,d,f,c,hop){py-=hop||0;if(c.k==="dan"){var o=OUTI;OUTI=c.o;person(px,py,d,"danoya",f,false);OUTI=o}else if(c.k==="doo"){var s=SHIRT;SHIRT=c.shirt;person(px,py,d,"doodi",f,false);SHIRT=s}else villager(px,py,d,f,c.sp)}
+var CAST={wren:["Granny Wren",{skin:"#a9724a",hair:"#f2f2f6",hs:"curly",top:"#6fae5a",bot:"#5a4a3a",blush:1,wrink:1,brow:"#d8d8e0",wide:1,apron:"#fff4e0",hat:"#e8c35a"},"Flowers listen, you know. Mine bloom facing the lake when your name comes up."],
+ judy:["Judy",{skin:"#8a5a3c",hair:"#1a1410",hs:"bun",top:"#17171c",bot:"#222230",glasses:1,lash:1,neck:"#d9a066",puff:1},"Tell me everything. Leave out nothing. Especially the cute parts."],
+ rocket:["Mr. Rocket",{skin:"#c98e5a",hair:"#e8e8e8",hs:"short",brow:"#e8e8e8",brow2:1,top:"#7a4a22",bot:"#3a3a44",goggles:1,stache:"#ff9f1c",scarf:"#ffffff"},"Stand back! This is my biggest firework yet. Probably. Hopefully."],
+ ferris:["Captain Ferris",{skin:"#b9835a",hair:"#8a8a90",hs:"cap",wrink:1,wide:1,top:"#f2c230",bot:"#3a4a5a",beard:"#8a8a90",cap:"#f2c230"},"Sea's calm today. Calm enough for two, anyway."],
+ mira:["Grandmother Mira",{skin:"#c9976a",hair:"#a8421e",hs:"bun",top:"#b0556a",bot:"#5a4a5a",apron:"#fff4e0",blush:1,wide:1,lash:1},"Sit. I made too much soup. I always make too much soup."],
+ tobi:["Tobi",{skin:"#d9a578",hair:"#2a1a10",hs:"spiky",top:"#4a7ac8",bot:"#3a3a4a",brow:"#2a1a10",brow2:1},"Race you to the pond! Okay, walk you to the pond."],
+ hesper:["Elder Hesper",{skin:"#c9a07a",hair:"#d8dae6",hs:"long",top:"#6a4a8a",bot:"#3a3248",glasses:1,wrink:1,mole:1},"Every lantern needs someone to light it. Remember that."],
+ pim:["Baker Tom",{skin:"#e8b898",hair:"#ffffff",hs:"cap",cap:"#ffffff",top:"#fff4e0",bot:"#6a5a4a",apron:"#e8c35a",wide:1,blush:1,stache:"#6a4a2a"},"Warm side up. Bread waits for no one."],
+ nell:["Robin",{skin:"#e0b090",hair:"#6a3a1a",hs:"ponytail",rib:"#f08ca8",top:"#f08ca8",bot:"#4a4a6a",lash:1},"Biscuit says hello. Mostly to the gate, but still."],
+ lio:["Lio",{skin:"#d9a578",hair:"#c8a040",hs:"side",top:"#f2e8d0",bot:"#6a5a3a",stub:"#c8a04044"},"Two jars of honey, one for you. The bees insisted."],
+ ines:["Ines",{skin:"#b9835a",hair:"#1a1410",hs:"long",top:"#4aa08a",bot:"#3a4a5a",hat:"#e8c35a",lash:1,blush:1},"Watch the water. Sometimes it glows."],
+ garo:["Miller Garo",{skin:"#c98e5a",hair:"#d8d0c0",hs:"bald",top:"#8a6a4a",bot:"#4a3a2a",stache:"#d8d0c0",brow:"#c8c0b0",blush:1},"The old wheel still turns. Slowly, like me."],
+ oru:["Oru",{skin:"#8a5a3c",hair:"#1a1410",hs:"cap",cap:"#2a5a8a",top:"#3a7ab0",bot:"#2a3a4a",beard:"#1a1410",wide:1,brow:"#1a1410"},"Fresh fish! Smoked fish! Very good fish!"],
+ bram:["Ralph",{skin:"#d9b898",hair:"#8a8a90",hs:"sidepart",top:"#2a2a38",bot:"#1a1a24",glasses:1,brow:"#6a6a70",brow2:1,wrink:1},"Mind the stones on the green. I keep them tidy for a reason."]};
+["nb-pre","nb2-pre"].forEach(function(id,j){var sel=$(id);if(j===1){var o0=document.createElement("option");o0.value="none";o0.textContent="Nobody";sel.appendChild(o0)}Object.keys(CAST).forEach(function(k){var o=document.createElement("option");o.value=k;o.textContent=CAST[k][0];if((j===0&&k==="wren")||(j===1&&k==="pim"))o.selected=true;sel.appendChild(o)});
+  sel.addEventListener("change",function(){var p=j?"nb2":"nb";if(sel.value==="none")return;$(p+"-name").value=CAST[sel.value][0];$(p+"-line").value=CAST[sel.value][2]})});
+var LCOL=[["Amber","#ffb35a"],["Rose","#ff8aa8"],["Sea","#6fd3c9"],["Lilac","#b79cff"],["Gold","#ffd34d"],["Plain paper","#f3e7c8"]];
+var LMARK=[["name","Their name"],["notes","Three falling notes"],["heart","A heart"],["sun","A small sun"],["star","A star"],["blank","Leave it blank"]];
+LCOL.forEach(function(c,i){var o=document.createElement("option");o.value=i;o.textContent=c[0];if(i===1)o.selected=true;$("lan-col").appendChild(o)});
+LMARK.forEach(function(m,i){var o=document.createElement("option");o.value=m[0];o.textContent=m[1];if(i===1)o.selected=true;$("lan-mark").appendChild(o)});
+var PL={home:{n:"🏡 Home",r:[0,0,2,2]},pond:{n:"🐟 Pond",r:[7,5,3,3]},shrine:{n:"⛩️ Shrine",r:[0,6,2,2]},oak:{n:"🌳 Big oak",r:[8,2,2,2]},bench:{n:"🪑 Bench",r:[4,7,2,1]},stall:{n:"🥖 Bread stall",r:[2,0,2,1]},lamp:{n:"🏮 Lamp post",r:[6,0,1,1]}};
+Object.keys(PL).forEach(function(k){var l=document.createElement("label");l.innerHTML='<input type="checkbox" id="pl-'+k+'" checked> '+PL[k].n;$("places").appendChild(l)});
+var SONGS=[["menu","Menu theme"],["ch1-opening","Chapter 1 opening"],["ch1-morning","Chapter 1 mornings"],["ch1-evening","Chapter 1 evenings"],["ch1-date","Chapter 1 dates"],["ch2-opening","Chapter 2 opening"],["ch2-morning","Chapter 2 mornings"],["ch2-date","Chapter 2 dates"],["ch3-dungeon","Chapter 3 dungeon"],["ch5-dawn","Chapter 5 dawn"],["none","No music"]];
+SONGS.forEach(function(s,i){var o=document.createElement("option");o.value=s[0];o.textContent="♪ "+s[1];if(i===2)o.selected=true;$("music").appendChild(o)});
+var MUS=new Audio();MUS.loop=true;MUS.volume=.6;var MON=true,PREV=false;
+function playSong(id){try{if(id==="none"||!MON){MUS.pause();return}var src="music/"+id+".mp3";if(MUS.getAttribute("src")!==src){MUS.setAttribute("src",src)}MUS.volume=.6;var pr=MUS.play();if(pr&&pr.catch)pr.catch(function(){})}catch(e){}}
+$("mprev").onclick=function(){if(PREV&&!MUS.paused){MUS.pause();PREV=false;$("mprev").textContent="▶ Listen";return}PREV=true;MON=true;$("g-mute").textContent="♪ Music on";playSong($("music").value);$("mprev").textContent=$("music").value==="none"?"▶ Listen":"⏸ Stop"};
+$("music").addEventListener("change",function(){if(!MUS.paused)playSong($("music").value)});
+$("g-mute").onclick=function(){MON=!MON;$("g-mute").textContent=MON?"♪ Music on":"♪ Music off";if(MON)playSong(G.C.mu);else MUS.pause()};
+var IDS=["me-name","them-name","me-look","them-look","v-name","flower","roof","scene","tod","weather","nb-pre","nb-name","nb-line","nb2-pre","nb2-name","nb2-line","pet","pet-name","goal","sweet","sp-where","sp-item","sp-note","lan-col","lan-mark","fx-dance","fx-sky","fx-fire","fx-star","secret","music"];Object.keys(PL).forEach(function(k){IDS.push("pl-"+k)});["me","them"].forEach(function(p){["hs","skin","hair","top","bot","glasses","blush","beard","hat"].forEach(function(k){IDS.push(p+"-"+k)})});
+try{var sv=JSON.parse(localStorage.getItem("dv-make2")||"null");if(sv)IDS.forEach(function(id){var el=$(id);if(!el||sv[id]===undefined)return;if(el.type==="checkbox")el.checked=!!sv[id];else el.value=sv[id]})}catch(e){}
+function saveForm(){try{var o={};IDS.forEach(function(id){var el=$(id);o[id]=el.type==="checkbox"?el.checked:el.value});localStorage.setItem("dv-make2",JSON.stringify(o))}catch(e){}}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function rcol(){return "#"+[0,0,0].map(function(){return ("0"+Math.floor(40+Math.random()*200).toString(16)).slice(-2)}).join("")}
+$("randbtn").onclick=function(){["me-look","them-look","flower","scene","tod","weather","pet","goal","sp-where","sp-item","lan-col","lan-mark","music"].forEach(function(id){var o=$(id).options,i=Math.floor(Math.random()*o.length);if(id==="music"&&o[i].value==="none")i=0;if(id==="sp-where"&&o[i].value==="none")i=2;$(id).selectedIndex=i});
+  ["nb-pre","nb2-pre"].forEach(function(id){var o=$(id).options,i=Math.floor(Math.random()*o.length);if(o[i].value==="none")i=1;$(id).selectedIndex=i;$(id).dispatchEvent(new Event("change"))});
+  $("roof").value=rcol();Object.keys(PL).forEach(function(k){$("pl-"+k).checked=Math.random()<.8});["fx-dance","fx-sky","fx-fire","fx-star"].forEach(function(id){$(id).checked=Math.random()<.6});
+  ["me","them"].forEach(function(p){$(p+"-hs").selectedIndex=Math.floor(Math.random()*$(p+"-hs").options.length);$(p+"-top").value=rcol();$(p+"-bot").value=rcol();$(p+"-hair").value=rcol()});
+  $("pet-name").value=pick(["Biscuit","Mochi","Pebble","Sunny","Clover","Pip","Noodle","Honey"]);
+  try{tn(660,0,.1,"triangle");tn(880,.08,.15,"triangle")}catch(e){}};
+function lanternDraw(g,x,y,s,col,mark,name,glow){g.save();g.translate(x,y);g.scale(s,s);
+  if(glow){var r=g.createRadialGradient(0,52,4,0,52,70);r.addColorStop(0,"rgba(255,200,120,.55)");r.addColorStop(1,"rgba(255,200,120,0)");g.fillStyle=r;g.fillRect(-80,-20,160,150)}
+  g.strokeStyle="#6b5a48";g.lineWidth=2;g.beginPath();g.moveTo(0,-24);g.lineTo(0,0);g.stroke();
+  g.fillStyle="#3a2a1a";g.fillRect(-28,0,56,7);g.fillRect(-28,92,56,7);g.fillStyle=col;g.fillRect(-24,7,48,85);g.fillStyle="rgba(255,255,255,.22)";g.fillRect(-24,7,10,85);g.fillStyle="rgba(60,30,10,.18)";g.fillRect(14,7,10,85);
+  g.strokeStyle="#4a2e18";g.fillStyle="#4a2e18";g.lineWidth=3;g.lineCap="round";
+  if(mark==="notes"){[[-12,34,-5,43],[-3,46,4,55],[7,58,14,67]].forEach(function(q){g.beginPath();g.moveTo(q[0],q[1]);g.lineTo(q[2],q[3]);g.stroke()})}
+  else if(mark==="name"){g.font="bold 10px sans-serif";g.textAlign="center";g.fillText(name.toUpperCase().slice(0,7),0,52)}
+  else if(mark==="heart"){g.beginPath();g.moveTo(0,64);g.bezierCurveTo(-18,50,-12,34,0,44);g.bezierCurveTo(12,34,18,50,0,64);g.fill()}
+  else if(mark==="sun"){g.beginPath();g.arc(0,50,8,0,6.3);g.fill();g.lineWidth=2;for(var j=0;j<10;j++){var b=j/10*6.283;g.beginPath();g.moveTo(Math.cos(b)*12,50+Math.sin(b)*12);g.lineTo(Math.cos(b)*18,50+Math.sin(b)*18);g.stroke()}}
+  else if(mark==="star"){g.beginPath();for(var k=0;k<10;k++){var rr=k%2?6:15,an=-1.5708+k*.62832;g.lineTo(Math.cos(an)*rr,50+Math.sin(an)*rr)}g.closePath();g.fill()}
+  g.restore()}
+/* pets, drawn the same way as everything else: rectangles */
+function petDraw(px,py,kind,d,hop){if(kind==="none")return;py-=hop||0;var flip=d===3;cx.save();if(flip){cx.translate(px*2+32,0);cx.scale(-1,1)}
+  R(px+9,py+28,16,3,"#00000030");var w=Math.sin(time*10)>0?1:0;
+  if(kind==="dog"){R(px+8,py+19,16,8,"#b07a4a");R(px+9,py+26,3,4,"#8a5a34");R(px+20,py+26,3,4,"#8a5a34");R(px+20,py+12,10,9,"#b07a4a");R(px+20,py+12,3,8,"#6b4426");R(px+27,py+17,4,3,"#e8c8a8");R(px+30,py+17,1,1,"#111");R(px+25,py+15,2,2,"#111");R(px+5,py+17-w,4,3,"#b07a4a")}
+  else if(kind==="cat"){R(px+8,py+20,15,8,"#e8954a");R(px+9,py+27,3,3,"#c9763a");R(px+19,py+27,3,3,"#c9763a");R(px+18,py+13,10,9,"#e8954a");R(px+18,py+10,3,4,"#e8954a");R(px+25,py+10,3,4,"#e8954a");R(px+20,py+16,2,2,"#2a4a2a");R(px+25,py+16,2,2,"#2a4a2a");R(px+5,py+12+w,3,10,"#e8954a");R(px+11,py+21,2,5,"#c9763a");R(px+15,py+21,2,5,"#c9763a")}
+  else if(kind==="bunny"){R(px+9,py+20,13,9,"#f4f1ea");R(px+18,py+14,9,8,"#f4f1ea");R(px+19,py+5-w,3,10,"#f4f1ea");R(px+23,py+6,3,9,"#f4f1ea");R(px+20,py+7,1,6,"#f4a8b8");R(px+24,py+8,1,6,"#f4a8b8");R(px+24,py+17,2,2,"#111");R(px+26,py+19,2,1,"#f08ca8");R(px+7,py+22,3,3,"#ffffff")}
+  else if(kind==="duck"){R(px+10,py+19,13,9,"#ffd34d");R(px+19,py+12,8,8,"#ffd34d");R(px+26,py+15,5,3,"#f08a3c");R(px+23,py+14,2,2,"#111");R(px+12,py+21,7,4,"#f2c230");R(px+12,py+28,3,2,"#f08a3c");R(px+18,py+28,3,2,"#f08a3c")}
+  else if(kind==="fox"){R(px+9,py+19,14,8,"#e0662a");R(px+10,py+26,3,4,"#3a2a2a");R(px+19,py+26,3,4,"#3a2a2a");R(px+19,py+12,10,9,"#e0662a");R(px+19,py+9,3,4,"#e0662a");R(px+26,py+9,3,4,"#e0662a");R(px+24,py+17,6,4,"#fff4e8");R(px+29,py+17,1,1,"#111");R(px+24,py+14,2,2,"#111");R(px+3,py+15+w,7,6,"#e0662a");R(px+2,py+15+w,3,4,"#fff4e8")}
+  cx.restore()}
+/* the mini game */
+var gcv=$("gcv"),W=10,H=8,T=32,DX=[0,1,0,-1],DY=[-1,0,1,0];
+var G={};
+var FN=["sunflower","daffodil","lily","tulip"],FE=["🌻","🌼","🪷","🌷"];
+var SPOTS=[[4,1],[7,2],[2,5],[5,6],[3,3]];
+function cfg(){var pl=Object.keys(PL).filter(function(k){return $("pl-"+k).checked}),spw=$("sp-where").value;if(spw!=="none"&&spw!=="flower"&&pl.indexOf(spw)<0)spw="flower";
+  var nbs=[];var n1=$("nb-pre").value;nbs.push({x:8,y:1,d:2,sp:CAST[n1][1],name:$("nb-name").value.trim()||CAST[n1][0],line:$("nb-line").value.trim()||CAST[n1][2]});
+  var n2=$("nb2-pre").value;if(n2!=="none")nbs.push({x:1,y:3,d:1,sp:CAST[n2][1],name:$("nb2-name").value.trim()||CAST[n2][0],line:$("nb2-line").value.trim()||CAST[n2][2]});
+  return {me:($("me-name").value.trim()||"You"),them:($("them-name").value.trim()||"Them"),vn:($("v-name").value.trim()||"Our Valley"),fl:+$("flower").value,roof:$("roof").value,nbs:nbs,
+  lc:LCOL[+$("lan-col").value][1],lm:$("lan-mark").value,secret:($("secret").value.trim()||"I love you."),cm:look("me"),ct:look("them"),sc:$("scene").value,tod:$("tod").value,wx:$("weather").value,mu:$("music").value,pl:pl,
+  pet:$("pet").value,pn:($("pet-name").value.trim()||"Your pet"),goal:+$("goal").value,sweet:($("sweet").value.trim()||"Stay a while."),spw:spw,spi:$("sp-item").value,spn:$("sp-note").value.trim(),
+  fx:{dance:$("fx-dance").checked,sky:$("fx-sky").checked,fire:$("fx-fire").checked,star:$("fx-star").checked}}}
+var SCN={spring:{g:["#6fbf5a","#68b753"],d:"#4e9a44",w:["#4aa3e8","#5fb6f2"],leaf:["#3f8f3c","#58b04f"],soil:"#8a5b36"},
+ summer:{g:["#a9c94e","#a0bf47"],d:"#7f9a34",w:["#3b9be0","#56b0ef"],leaf:["#4f8a2c","#6aa83a"],soil:"#9a6a3a"},
+ autumn:{g:["#b99a4a","#ad8f43"],d:"#c0632a",w:["#4a8ab8","#5d9cc8"],leaf:["#d0602a","#e8952e"],soil:"#7a4a2a"},
+ winter:{g:["#eef3f7","#e3ebf2"],d:"#c9d6e2",w:["#b8dcef","#cfe8f5"],leaf:["#2f5a46","#ffffff"],soil:"#9aa6b2"},
+ seaside:{g:["#ecd9a4","#e3cf98"],d:"#c9b37a",w:["#2fa6c8","#46bede"],leaf:["#3f9a5a","#58b06f"],soil:"#b08a5a"}};
+var TOD={morning:"rgba(255,214,170,.14)",day:null,sunset:"rgba(255,110,60,.26)",night:"rgba(16,18,64,.55)"};
+function hasPl(k){return G.C&&G.C.pl.indexOf(k)>-1}
+function inPl(x,y){for(var i=0;i<G.C.pl.length;i++){var k=G.C.pl[i],r=PL[k].r;if(x>=r[0]&&y>=r[1]&&x<r[0]+r[2]&&y<r[1]+r[3])return k}return null}
+function mkWx(kind){var a=[];var n={clear:0,sakura:22,rain:60,snow:40,leaves:18,fireflies:16,hearts:10}[kind]||0;for(var i=0;i<n;i++)a.push({x:Math.random()*320,y:Math.random()*256,v:.5+Math.random(),p:Math.random()*6.28});return a}
+var banT=null;
+function newGame(){var C=cfg();G={C:C,p:{x:4,y:4,d:2,f:0},n:{x:6,y:4,d:3},pet:{x:4,y:5,d:2,h:0},nbs:C.nbs,bag:0,hearts:0,fl:SPOTS.map(function(s){return {x:s[0],y:s[1],t:0}}),end:0,hs:[],wx:mkWx(C.wx),fw:[],sky:[],ss:[],found:false,sparks:[]};
+  $("g-hearts").textContent="♥ 0 / "+C.goal;$("g-bag").textContent=FE[C.fl]+" 0";$("g-who").textContent=C.me+" & "+C.them+(C.pet!=="none"?" & "+C.pn:"");
+  msg("Walk with the arrows, press A to pick a "+FN[C.fl]+", then give it to "+C.them+".");$("g-letter").classList.remove("on");$("g-sur").classList.remove("on");
+  $("g-letter-to").textContent=C.me+",";$("g-letter-body").textContent=C.secret;$("g-letter-from").textContent="With love, "+C.them;
+  $("g-ban").textContent="Welcome to "+C.vn;$("g-ban").classList.add("on");clearTimeout(banT);banT=setTimeout(function(){$("g-ban").classList.remove("on")},2800)}
+function msg(t){$("g-msg").textContent=t}
+function blocked(x,y){if(x<0||y<0||x>=W||y>=H)return true;return !!inPl(x,y)}
+function nbAt(x,y){for(var i=0;i<G.nbs.length;i++)if(G.nbs[i].x===x&&G.nbs[i].y===y)return G.nbs[i];return null}
+function occ(x,y){return (G.n.x===x&&G.n.y===y)||!!nbAt(x,y)||G.fl.some(function(f){return f.x===x&&f.y===y})}
+function move(d){if(G.end)return;var p=G.p;p.d=d;var nx=p.x+DX[d],ny=p.y+DY[d];if(!blocked(nx,ny)&&!occ(nx,ny)){var ox=p.x,oy=p.y;p.x=nx;p.y=ny;p.f=p.f===1?2:1;setTimeout(function(){p.f=0},160);if(G.pet.x===nx&&G.pet.y===ny||Math.abs(G.pet.x-nx)+Math.abs(G.pet.y-ny)>1){G.pet.d=ox>G.pet.x?1:ox<G.pet.x?3:G.pet.d;G.pet.x=ox;G.pet.y=oy;G.pet.h=1}}}
+var LINES=["A {f} for me? Okay, I'm blushing.","You remembered my favourite. Of course you did.","Another one? You're spoiling me.","Careful, I might start expecting this every day."];
+function giftLine(n,goal){if(n>=goal)return G.C.sweet;return LINES[goal===3?Math.min(n-1,1):n-1]}
+function surprise(){var C=G.C;G.found=true;$("g-sur-i").textContent=C.spi;$("g-sur-t").textContent=(C.spn||"Something just for you.");$("g-sur").classList.add("on");try{SFX.chime()}catch(e){}for(var i=0;i<24;i++)G.sparks.push({x:G.p.x*T+16,y:G.p.y*T+8,vx:(Math.random()-.5)*120,vy:-40-Math.random()*90,t:0});setTimeout(function(){$("g-sur").classList.remove("on")},7000)}
+$("g-sur").onclick=function(){$("g-sur").classList.remove("on")};
+function act(){if(G.end)return;var p=G.p,C=G.C,tx=p.x+DX[p.d],ty=p.y+DY[p.d];
+  if(G.n.x===tx&&G.n.y===ty){if(G.bag>0){G.bag--;G.hearts++;G.hs.push({x:G.n.x*T+16,y:G.n.y*T,t:0});try{SFX.heart()}catch(e){}msg(C.them+": "+giftLine(G.hearts,C.goal).replace("{f}",FN[C.fl]));$("g-hearts").textContent="♥ "+G.hearts+" / "+C.goal;$("g-bag").textContent=FE[C.fl]+" "+G.bag;if(G.hearts>=C.goal)setTimeout(finale,1400)}else msg(C.them+": Bring me a "+FN[C.fl]+"? Pretty please.");return}
+  var nb=nbAt(tx,ty);if(nb){msg(nb.name+": "+nb.line);nb.d=(p.d+2)%4;try{SFX.bleep()}catch(e){}return}
+  if(C.pet!=="none"&&G.pet.x===tx&&G.pet.y===ty){G.pet.h=1;G.hs.push({x:G.pet.x*T+16,y:G.pet.y*T+10,t:0});msg({dog:C.pn+" wags so hard the whole dog wags.",cat:C.pn+" purrs and headbutts your hand.",bunny:C.pn+" does a happy little binky.",duck:C.pn+" quacks, very proudly.",fox:C.pn+" yips and curls around your feet."}[C.pet]);return}
+  for(var i=0;i<G.fl.length;i++){var f=G.fl[i];if(f.x===tx&&f.y===ty){if(f.t>0){msg("It's still growing. Give it a moment.");return}f.t=8;G.bag++;$("g-bag").textContent=FE[C.fl]+" "+G.bag;msg("You picked a "+FN[C.fl]+". Give it to "+C.them+".");if(C.spw==="flower"&&!G.found)setTimeout(surprise,500);return}}
+  var pk=(tx>=0&&ty>=0&&tx<W&&ty<H)?inPl(tx,ty):null;if(pk){var night=C.tod==="night";
+    if(pk===C.spw&&!G.found){msg("Wait... there's something here.");surprise();return}
+    msg({home:"Your home. The roof is your colour."+(night?" The windows are glowing.":""),pond:"A little pond. Something glows under the water.",shrine:"The little shrine with the red roof. Someone left a fresh "+FN[C.fl]+" on the step.",oak:"A big old oak. Someone carved "+C.me.charAt(0).toUpperCase()+" + "+C.them.charAt(0).toUpperCase()+" into the bark.",bench:"A bench for two. You sit for a moment and watch the "+(night?"stars":"clouds")+".",stall:"The bread stall. Warm loaves and one cinnamon bun with your name on it.",lamp:night?"The lamp post hums softly. It lit itself at dusk.":"A lamp post. It lights itself when it gets dark."}[pk]);return}}
+function finale(){G.end=1;G.endT=0;msg(G.C.them+" takes your hand. The sky turns gold, and your lantern rises.");try{MUS.volume=.2}catch(e){}three();setTimeout(function(){$("g-letter").classList.add("on")},3200);
+  if(G.C.fx.sky)for(var i=0;i<15;i++)G.sky.push({x:12+Math.random()*296,y:260+Math.random()*160,v:14+Math.random()*16,c:LCOL[i%5][1],p:Math.random()*6.28})}
+$("g-lx").onclick=function(){$("g-letter").classList.remove("on")};
+function flower(px,py,t,grown){if(!grown){R(px+15,py+18,2,6,"#3f8f3c");R(px+13,py+16,3,3,"#58b04f");R(px+16,py+16,3,3,"#58b04f");return}
+  R(px+15,py+10,2,16,"#3f8f3c");R(px+9,py+18,6,3,"#58b04f");R(px+17,py+20,6,3,"#58b04f");var sw=Math.round(Math.sin(time*2+px)*1.2);px+=sw;
+  if(t===0){R(px+9,py+3,14,12,"#ffc83d");R(px+11,py+1,10,16,"#ffd34f");R(px+12,py+5,8,8,"#6b3d1e")}
+  else if(t===1){R(px+10,py+3,12,12,"#fff07a");R(px+13,py+1,6,16,"#fff07a");R(px+13,py+5,6,7,"#ff9f1c")}
+  else if(t===2){R(px+8,py+7,16,6,"#ffffff");R(px+13,py+2,6,16,"#ffffff");R(px+14,py+7,4,4,"#ff7aa8")}
+  else{R(px+10,py+6,12,11,"#e63950");R(px+10,py+3,4,5,"#e63950");R(px+18,py+3,4,5,"#e63950");R(px+14,py+2,4,6,"#ff5b73")}}
+function drawWx(dt){var C=G.C;G.wx.forEach(function(q){
+  if(C.wx==="rain"){q.y+=dt*260*q.v;q.x-=dt*40;if(q.y>256){q.y=-8;q.x=Math.random()*340}cx.fillStyle="#cfe2ffaa";cx.fillRect(q.x,q.y,1,7)}
+  else if(C.wx==="snow"){q.y+=dt*30*q.v;q.x+=Math.sin(time+q.p)*dt*12;if(q.y>256){q.y=-4;q.x=Math.random()*320}R(q.x,q.y,2,2,"#ffffff")}
+  else if(C.wx==="sakura"){q.y+=dt*22*q.v;q.x+=Math.sin(time*1.5+q.p)*dt*24+dt*10;if(q.y>256||q.x>330){q.y=-4;q.x=Math.random()*300}R(q.x,q.y,3,2,"#ffb7cf");R(q.x+1,q.y-1,1,1,"#ffd9e6")}
+  else if(C.wx==="leaves"){q.y+=dt*26*q.v;q.x+=Math.sin(time*1.2+q.p)*dt*30;if(q.y>256){q.y=-4;q.x=Math.random()*320}R(q.x,q.y,3,2,q.p>3?"#e8952e":"#d0602a")}
+  else if(C.wx==="fireflies"){q.x+=Math.cos(time*.7+q.p)*dt*14;q.y+=Math.sin(time*.9+q.p*2)*dt*10;var a=.4+.6*Math.max(0,Math.sin(time*2.4+q.p*3));var g=cx.createRadialGradient(q.x,q.y,0,q.x,q.y,7);g.addColorStop(0,"rgba(255,240,140,"+a+")");g.addColorStop(1,"rgba(255,240,140,0)");cx.fillStyle=g;cx.fillRect(q.x-7,q.y-7,14,14);R(q.x,q.y,1,1,"#fff8b0")}
+  else if(C.wx==="hearts"){q.y-=dt*16*q.v;q.x+=Math.sin(time+q.p)*dt*8;if(q.y<-10){q.y=262;q.x=Math.random()*320}cx.globalAlpha=.55;cx.font="9px serif";cx.fillText("💗",q.x,q.y);cx.globalAlpha=1}})}
+function drawGame(dt){paint(gcv,function(){var C=G.C;
+  var SC=SCN[C.sc]||SCN.spring,NT=C.tod==="night",win=NT||C.tod==="sunset"?"#ffd98a":"#bfe3ff";
+  for(var y=0;y<H;y++)for(var x=0;x<W;x++){R(x*T,y*T,T,T,SC.g[(x+y)%2]);if((x*7+y*3)%5===0){R(x*T+6,y*T+8,2,4,SC.d);R(x*T+20,y*T+20,2,4,SC.d)}}
+  if(C.sc==="autumn"){for(var q=0;q<18;q++){R((q*67+11)%316,(q*41+7)%252,3,2,q%2?"#d0602a":"#e8b02e")}}
+  if(C.sc==="winter"){for(var q2=0;q2<14;q2++){R((q2*71+13)%316,(q2*37+11)%250,3,2,"#ffffff")}}
+  if(C.sc==="seaside"){R(0,0,320,3,"#46bede");for(var q3=0;q3<10;q3++)R((q3*61+13)%310,(q3*47+19)%250,4,3,"#f4e8c8")}
+  if(hasPl("home")){R(4,26,56,34,"#e8d2b0");R(4,26,56,4,"#c9b08a");R(2,10,60,20,C.roof);R(6,6,52,8,C.roof);if(C.sc==="winter"){R(4,6,56,4,"#ffffff");R(2,10,60,3,"#ffffff")}R(2,26,60,3,"#00000030");R(26,36,12,24,"#5b3a22");R(34,48,2,2,"#ffd34f");R(10,36,10,10,win);R(44,36,10,10,win)}
+  if(hasPl("pond")){var px0=7*T,py0=5*T;R(px0+4,py0+4,88,88,SC.w[0]);R(px0+10,py0+10,76,76,SC.w[1]);if(C.sc!=="winter"){var o=(time*20)%12;R(px0+24+o,py0+30,14,2,"#ffffff88");R(px0+50-o,py0+60,14,2,"#ffffff88")}else{R(px0+20,py0+24,30,2,"#ffffffaa");R(px0+44,py0+58,24,2,"#ffffffaa")}cx.globalAlpha=.5+.4*Math.sin(time*2);R(px0+40,py0+44,6,4,"#ffb35a");cx.globalAlpha=1}
+  if(hasPl("shrine")){var sx=0,sy=6*T;R(sx+10,sy+30,44,30,"#9c968c");R(sx+10,sy+30,44,3,"#b8b2a6");R(sx+12,sy+28,5,32,"#7a2a22");R(sx+47,sy+28,5,32,"#7a2a22");R(sx+26,sy+40,12,20,"#3a2a2a");R(sx+2,sy+18,60,10,"#c0392b");R(sx+8,sy+12,48,8,"#d9473a");R(sx+20,sy+8,24,5,"#d9473a");if(C.sc==="winter")R(sx+8,sy+11,48,3,"#fff");R(sx+30,sy+52,4,4,"#ffd34f")}
+  if(hasPl("oak")){var ox=8*T,oy=2*T;R(ox+8,oy+56,48,6,"#00000025");R(ox+26,oy+34,12,26,"#6b4426");R(ox+22,oy+56,20,4,"#6b4426");R(ox+4,oy+6,56,32,SC.leaf[0]);R(ox+12,oy-2,40,12,SC.leaf[0]);R(ox+10,oy+4,20,10,SC.leaf[1]);R(ox+36,oy+12,16,8,SC.leaf[1]);R(ox+29,oy+42,6,4,"#4a2e18")}
+  if(hasPl("bench")){var bx=4*T,by=7*T;R(bx+6,by+6,52,4,"#7a4a2c");R(bx+6,by+14,52,6,"#8a5a3c");R(bx+9,by+20,4,9,"#5a3a22");R(bx+51,by+20,4,9,"#5a3a22");R(bx+9,by+10,3,4,"#5a3a22");R(bx+52,by+10,3,4,"#5a3a22")}
+  if(hasPl("stall")){var stx=2*T,sty=0;R(stx+6,sty+14,52,16,"#b07a4a");R(stx+6,sty+14,52,3,"#8a5a34");for(var s2=0;s2<7;s2++)R(stx+4+s2*8,sty+2,8,10,s2%2?"#fff4e8":"#e0567a");R(stx+12,sty+10,10,5,"#d9a35a");R(stx+26,sty+10,8,5,"#c98a44");R(stx+40,sty+10,10,5,"#d9a35a")}
+  if(hasPl("lamp")){var lx=6*T,ly0=0;if(NT||C.tod==="sunset"){var gr=cx.createRadialGradient(lx+16,ly0+8,2,lx+16,ly0+8,48);gr.addColorStop(0,"rgba(255,220,130,.5)");gr.addColorStop(1,"rgba(255,220,130,0)");cx.fillStyle=gr;cx.fillRect(lx-32,ly0-40,96,96)}R(lx+14,ly0+10,4,20,"#2f2f36");R(lx+11,ly0+28,10,3,"#2f2f36");R(lx+10,ly0+2,12,9,"#3a3a44");R(lx+12,ly0+4,8,5,NT||C.tod==="sunset"?"#ffe08a":"#c9c9b8")}
+  G.fl.forEach(function(f){R(f.x*T+1,f.y*T+1,T-2,T-2,SC.soil);if(f.t>0)f.t=Math.max(0,f.t-dt);flower(f.x*T,f.y*T,C.fl,f.t<=0)});
+  if(!G.found&&C.spw!=="none"&&C.spw!=="flower"){var r=PL[C.spw].r,tw=Math.max(0,Math.sin(time*3));cx.globalAlpha=tw;var sxp=r[0]*T+r[2]*T/2,syp=r[1]*T+r[3]*T/2;R(sxp-1,syp-5,2,10,"#fff8c0");R(sxp-5,syp-1,10,2,"#fff8c0");R(sxp-1,syp-1,2,2,"#ffffff");cx.globalAlpha=1}
+  var dance=G.end&&C.fx.dance&&G.endT>1.2,hp=dance?Math.abs(Math.sin(time*7))*4:0,hn=dance?Math.abs(Math.sin(time*7+1.5))*4:0;
+  if(dance&&Math.floor(time*2)%2){G.p.d=G.n.x>G.p.x?1:3}
+  if(G.pet.h>0)G.pet.h=Math.max(0,G.pet.h-dt*4);
+  var L=[{y:G.n.y,f:function(){drawChar(G.n.x*T,G.n.y*T,G.n.d,dance?(Math.floor(time*6)%2+1):0,C.ct,hn)}},{y:G.p.y,f:function(){drawChar(G.p.x*T,G.p.y*T,G.p.d,G.p.f||(dance?(Math.floor(time*6)%2+1):0),C.cm,hp)}}];
+  G.nbs.forEach(function(nb){L.push({y:nb.y,f:function(){villager(nb.x*T,nb.y*T,nb.d,0,nb.sp)}})});
+  if(C.pet!=="none")L.push({y:G.pet.y-.1,f:function(){petDraw(G.pet.x*T,G.pet.y*T,C.pet,G.pet.d,Math.sin(G.pet.h*3.14)*5+(dance?Math.abs(Math.sin(time*9))*3:0))}});
+  L.sort(function(a,b){return a.y-b.y});L.forEach(function(e){e.f()});
+  if(TOD[C.tod]){cx.fillStyle=TOD[C.tod];cx.fillRect(0,0,320,256)}
+  if(NT){for(var st=0;st<16;st++){cx.globalAlpha=.5+.4*Math.sin(time*2+st);R((st*59+7)%320,(st*23+3)%70,2,2,"#fff");cx.globalAlpha=1}if(hasPl("home")){R(10,36,10,10,"#ffd98a");R(44,36,10,10,"#ffd98a")}if(hasPl("lamp"))R(6*T+12,4,8,5,"#ffe08a")}
+  drawWx(dt);
+  cx.font="bold 9px sans-serif";cx.textAlign="center";cx.lineWidth=3;cx.strokeStyle="#0009";var labels=G.nbs.map(function(nb){return [nb,nb.name]});labels.push([G.n,C.them]);labels.forEach(function(q){var dd=Math.abs(q[0].x-G.p.x)+Math.abs(q[0].y-G.p.y);if(dd<=3&&dd>0&&!G.end){cx.strokeText(q[1],q[0].x*T+16,q[0].y*T-8);cx.fillStyle="#ffe9a8";cx.fillText(q[1],q[0].x*T+16,q[0].y*T-8)}});
+  if(!G.end){var tx=G.p.x+DX[G.p.d],ty=G.p.y+DY[G.p.d];if(tx>=0&&ty>=0&&tx<W&&ty<H&&!blocked(tx,ty)){cx.strokeStyle="#ffffffaa";cx.lineWidth=2;cx.strokeRect(tx*T+2,ty*T+2,T-4,T-4)}}
+  cx.font="16px serif";G.hs=G.hs.filter(function(h){return h.t<1.2});G.hs.forEach(function(h){h.t+=dt;cx.globalAlpha=1-h.t/1.2;cx.fillText("❤️",h.x,h.y-h.t*30);cx.globalAlpha=1});
+  G.sparks=G.sparks.filter(function(s){return s.t<1.4});G.sparks.forEach(function(s){s.t+=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy+=120*dt;cx.globalAlpha=1-s.t/1.4;R(s.x,s.y,2,2,s.t*10%2>1?"#fff8c0":"#ffd34d");cx.globalAlpha=1});
+  if(G.end){G.endT+=dt;var k=Math.min(1,G.endT/2.5);cx.fillStyle="rgba(40,20,70,"+(.55*k)+")";cx.fillRect(0,0,320,256);cx.fillStyle="rgba(255,190,120,"+(.18*k)+")";cx.fillRect(0,0,320,256);
+    for(var s=0;s<14;s++){cx.globalAlpha=k*(.4+.4*Math.sin(time*3+s));R((s*53)%320,(s*37)%120,2,2,"#fff");cx.globalAlpha=1}
+    if(C.fx.star){if(Math.random()<dt*.9)G.ss.push({x:40+Math.random()*260,y:6+Math.random()*50,t:0});G.ss=G.ss.filter(function(z){return z.t<.8});G.ss.forEach(function(z){z.t+=dt;var a=1-z.t/.8;cx.strokeStyle="rgba(255,255,255,"+a+")";cx.lineWidth=1.5;cx.beginPath();cx.moveTo(z.x-z.t*150,z.y+z.t*60);cx.lineTo(z.x-z.t*150+18,z.y+z.t*60-7);cx.stroke()})}
+    if(C.fx.sky)G.sky.forEach(function(l){l.y-=l.v*dt;if(l.y<-20)l.y=270;var bx2=l.x+Math.sin(time+l.p)*4;var g2=cx.createRadialGradient(bx2,l.y,1,bx2,l.y,14);g2.addColorStop(0,"rgba(255,200,120,.45)");g2.addColorStop(1,"rgba(255,200,120,0)");cx.fillStyle=g2;cx.fillRect(bx2-14,l.y-14,28,28);R(bx2-4,l.y-5,8,10,l.c);R(bx2-4,l.y-6,8,1,"#3a2a1a");R(bx2-4,l.y+5,8,1,"#3a2a1a")});
+    if(C.fx.fire&&G.endT>.8){if(Math.random()<dt*1.6){var fx0=40+Math.random()*240,fy0=20+Math.random()*70,col=pick(["#ff5b73","#ffd34d","#6fd3c9","#b79cff","#ff9a3c","#ffffff"]);for(var j=0;j<26;j++){var an=j/26*6.283,sp=40+Math.random()*30;G.fw.push({x:fx0,y:fy0,vx:Math.cos(an)*sp,vy:Math.sin(an)*sp,t:0,c:col})}try{tn(90+Math.random()*40,0,.35,"triangle",.12)}catch(e){}}
+      G.fw=G.fw.filter(function(f){return f.t<1.3});G.fw.forEach(function(f){f.t+=dt;f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy+=30*dt;cx.globalAlpha=Math.max(0,1-f.t/1.3);R(f.x,f.y,2,2,f.c);cx.globalAlpha=1})}
+    var ly=Math.max(18,200-G.endT*40);var mx=(G.p.x+G.n.x)/2*T+16;lanternDraw(cx,mx,ly,.55,C.lc,C.lm,C.them,true)}
+})}
+var npT=0;function stepNPC(dt){if(G.end){var p=G.p,n=G.n;if(!(G.C.fx.dance&&G.endT>1.2))n.d=n.x<p.x?1:n.x>p.x?3:n.d;else n.d=Math.floor(time*2)%2?(n.x<p.x?1:3):2;return}npT+=dt;if(npT<1.1)return;npT=0;if(Math.random()<.45)return;var d=Math.floor(Math.random()*4),nx=G.n.x+DX[d],ny=G.n.y+DY[d];G.n.d=d;if(!blocked(nx,ny)&&!(G.p.x===nx&&G.p.y===ny)&&!nbAt(nx,ny)&&!(G.pet.x===nx&&G.pet.y===ny)&&!G.fl.some(function(f){return f.x===nx&&f.y===ny}))G.n={x:nx,y:ny,d:d}}
+document.addEventListener("keydown",function(e){var tg=(e.target&&e.target.tagName)||"";if(tg==="INPUT"||tg==="TEXTAREA"||tg==="SELECT")return;var r=$("gcv").getBoundingClientRect();if(r.bottom<0||r.top>innerHeight)return;var k=e.key,d=-1;if(k==="ArrowUp"||k==="w"||k==="W")d=0;else if(k==="ArrowRight"||k==="d"||k==="D")d=1;else if(k==="ArrowDown"||k==="s"||k==="S")d=2;else if(k==="ArrowLeft"||k==="a"||k==="A")d=3;if(d>-1){e.preventDefault();move(d)}else if(k===" "||k==="Enter"||k==="e"||k==="E"){if(tg==="BUTTON")return;e.preventDefault();act()}});
+[].forEach.call(document.querySelectorAll("#game .dp button"),function(b){var tm=null,d=+b.dataset.d;function stop(){if(tm){clearInterval(tm);tm=null}}b.addEventListener("pointerdown",function(e){e.preventDefault();move(d);stop();tm=setInterval(function(){move(d)},180)});["pointerup","pointerleave","pointercancel"].forEach(function(ev){b.addEventListener(ev,stop)})});
+$("g-a").addEventListener("pointerdown",function(e){e.preventDefault();act()});
+gcv.addEventListener("pointerdown",function(e){var r=gcv.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)/r.width*W),y=Math.floor((e.clientY-r.top)/r.height*H),p=G.p,dx=x-p.x,dy=y-p.y;if(!dx&&!dy)return;if(Math.abs(dx)>=Math.abs(dy)){if(Math.abs(dx)===1&&!dy){p.d=dx>0?1:3;act()}else move(dx>0?1:3)}else{if(Math.abs(dy)===1&&!dx){p.d=dy>0?2:0;act()}else move(dy>0?2:0)}});
+$("buildbtn").onclick=function(){saveForm();newGame();PREV=false;$("mprev").textContent="▶ Listen";playSong(G.C.mu);msg("Your valley is ready! "+G.C.them+" is waiting. Pick a "+FN[G.C.fl]+" first."+(G.C.spw!=="none"?" And keep an eye out: something is hidden somewhere.":""));$("game").scrollIntoView({behavior:"smooth",block:"start"});try{tone(523,0,.15);tone(659,.12,.15);tone(784,.24,.3)}catch(e){}};
+$("g-again").onclick=function(){newGame();try{MUS.volume=.6}catch(e){}};
+function previews(){paint($("pv-me"),function(){drawChar(4,10,2,0,look("me"))});paint($("pv-them"),function(){drawChar(4,10,2,0,look("them"))});
+  paint($("pv-nb"),function(){villager(4,10,2,0,CAST[$("nb-pre").value][1]);var n2=$("nb2-pre").value;if(n2!=="none")villager(42,10,2,0,CAST[n2][1])});
+  paint($("pv-pet"),function(){petDraw(0,0,$("pet").value,1,Math.abs(Math.sin(time*4))*2)})}
+newGame();
+
+/* ---------- one loop for every canvas ---------- */
+var last=performance.now();
+function loop(now){var dt=Math.min(.05,(now-last)/1000);last=now;time+=dt;drawStrip();drawOutfit();paint($("odoo"),function(){person(4,10,2,"doodi",0,false)});paint($("vcv"),function(){villager(4,10,1,0,vspec())});previews();stepNPC(dt);drawGame(dt);requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+})();
+</script>
+
+</body></html>
