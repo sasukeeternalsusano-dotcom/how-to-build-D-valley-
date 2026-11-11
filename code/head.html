@@ -1,0 +1,109 @@
+<title>Danoya Valley</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Caveat:wght@600&family=Figtree:wght@400;600;800&display=swap">
+<style>
+*{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+input,textarea{-webkit-user-select:text;user-select:text}
+button,a,[role=button]{touch-action:manipulation}
+
+/* Concept: a pocket-sized pixel valley. Sunrise greens, a warm wood HUD, one coral accent for Danoya. */
+:root{--bg:#10353a;--bg2:#1a5a58;--panel:#173f43;--panel2:#1f5256;--ink:#fff6e8;--soft:#b9dcd6;--line:#2f827d;--coral:#ff6f5e;--gold:#ffc83d;--blue:#5ab8ff;--ok:#3ddc97;--no:#ff7b7b;--dark:#0b2a2d;--wood:#6b4426;--wood2:#8a5b36;--cream:#fdf0d5;color-scheme:dark}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#d9efe0;--bg2:#fff4d6;--panel:#fff8e8;--panel2:#ffe9c9;--ink:#2a2118;--soft:#6b5a49;--line:#d1a56c;--dark:#2a2118;--cream:#fff8e8;color-scheme:light}}
+:root[data-theme="light"]{--bg:#d9efe0;--bg2:#fff4d6;--panel:#fff8e8;--panel2:#ffe9c9;--ink:#2a2118;--soft:#6b5a49;--line:#d1a56c;--dark:#2a2118;--cream:#fff8e8;color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:radial-gradient(120% 70% at 50% 0,var(--bg2),var(--bg) 70%) fixed,var(--bg);color:var(--ink);font-family:Figtree,system-ui,sans-serif;line-height:1.45;
+  padding-inline:max(10px,env(safe-area-inset-left,0px)) max(10px,env(safe-area-inset-right,0px));padding-block:10px 40px;min-height:100vh;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.bng{font-family:Bungee,Impact,sans-serif;font-weight:400}
+.wrap{max-width:460px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
+#hud{display:flex;justify-content:space-between;align-items:center;gap:5px;flex-wrap:nowrap;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:7px 12px;font-weight:800;font-size:.86rem}
+#hud span{white-space:nowrap;font-variant-numeric:tabular-nums}
+#hud .hr{display:flex;align-items:center;gap:3px}
+#hud .hr .hh{font-size:1.05rem}
+#hud .hr b{font-size:1rem}
+#hud .hr .hb{display:inline-block;width:34px;height:7px;background:#00000022;border-radius:4px;overflow:hidden;margin-left:2px}
+#hud .hr .hb u{display:block;height:100%;background:#ff4f87;border-radius:4px;text-decoration:none}
+#stage{position:relative;border:3px solid var(--wood2);border-radius:14px;overflow:hidden;background:#000;box-shadow:0 8px 24px #0006;aspect-ratio:10/12}
+#cv{display:block;width:100%;height:100%;image-rendering:pixelated}
+#goal:empty{display:none}
+#goal{position:absolute;left:8px;right:8px;top:8px;background:#0008;color:#fff;border-radius:10px;padding:6px 10px;font-size:.88rem;font-weight:800;pointer-events:none;text-wrap:balance}
+#toast{position:absolute;left:50%;top:44px;transform:translateX(-50%) translateY(-8px);background:var(--gold);color:#2a1a00;font-weight:800;border-radius:99px;padding:6px 14px;font-size:.8rem;opacity:0;transition:.25s;pointer-events:none;max-width:92%;text-align:center;z-index:30}
+#toast.on{opacity:1;transform:translateX(-50%)}
+#dlg{position:absolute;left:8px;right:8px;bottom:8px;background:var(--cream);color:#3a2616;border:3px solid var(--wood);border-radius:14px;padding:10px 12px;z-index:20;box-shadow:0 4px 0 #0005}
+#dlg{max-height:calc(100% - 16px);display:flex;flex-direction:column;box-sizing:border-box}
+#dlg[hidden]{display:none}
+#dn{font-family:Bungee,sans-serif;font-size:.9rem;color:#c2412e;letter-spacing:.04em}
+#dt{font-weight:700;font-size:1.08rem;min-height:2.6em;line-height:1.4}
+#dn2{position:absolute;right:12px;bottom:6px;font-size:.8rem;animation:bob 1s infinite}
+@keyframes bob{50%{transform:translateY(3px)}}
+#dn,#dt{flex:0 0 auto}
+#dc{display:flex;flex-direction:column;gap:5px;margin-top:6px;overflow-y:auto;min-height:0;flex:1 1 auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;padding-right:2px}
+#dc button{flex:0 0 auto}
+#dc button,.mbtn{font:800 1rem Figtree,sans-serif;background:#fff;color:#3a2616;border:2px solid var(--wood2);border-radius:10px;padding:8px 10px;cursor:pointer;text-align:left}
+#dc button:active,.mbtn:active{transform:scale(.98)}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+#ov{position:absolute;inset:0;z-index:25;background:#000a;display:flex;align-items:center;justify-content:center;padding:14px}
+#ov[hidden]{display:none}
+.ovc{background:var(--cream);color:#3a2616;border:3px solid var(--wood);border-radius:16px;padding:14px;width:100%;max-height:100%;overflow:auto;text-align:center}
+.ovc h3{font-family:Bungee,sans-serif;font-weight:400;margin:0 0 6px;font-size:1.05rem}
+.ovc p{margin:4px 0;font-size:1rem}
+.meter{height:16px;background:#e8d5b0;border:2px solid var(--wood);border-radius:9px;overflow:hidden;margin:8px 0}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5ab8ff,#3ddc97)}
+.big{font:800 1.1rem Figtree,sans-serif;background:var(--coral);color:#fff;border:0;border-radius:14px;padding:12px 22px;cursor:pointer;box-shadow:0 4px 0 #a33a2e}
+.big:active{transform:translateY(3px);box-shadow:0 1px 0 #a33a2e}
+#mgs{position:relative;height:220px;background:#12304a;border-radius:12px;overflow:hidden;margin:8px 0;border:2px solid var(--wood)}
+.star{position:absolute;font-size:32px;border:0;background:none;cursor:pointer;padding:6px;animation:fall linear forwards}
+@keyframes fall{from{transform:translateY(-40px)}to{transform:translateY(240px)}}
+.arrows{display:flex;gap:8px;justify-content:center;margin:10px 0}
+.arrows button{width:56px;height:56px;border-radius:14px;border:3px solid var(--wood);background:#fff;font-size:1.5rem;cursor:pointer}
+.arrows button.hit{background:var(--ok)}
+.arrows button.miss{background:var(--no)}
+#ctl{display:flex;justify-content:space-between;align-items:center;padding:4px 6px}
+.dp{display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px);gap:3px}
+.dp button{background:var(--panel2);border:2px solid var(--line);border-radius:12px;color:var(--ink);font-size:1.15rem;cursor:pointer;touch-action:none}
+.dp button:active,.dp button.on{background:var(--coral)}
+.ab{display:flex;gap:12px;align-items:flex-end}
+.ab button{width:70px;height:70px;border-radius:50%;border:3px solid #7a2a20;background:var(--coral);color:#fff;font:800 1.15rem Figtree,sans-serif;cursor:pointer;box-shadow:0 5px 0 #7a2a20;touch-action:none}
+.ab button.b{width:56px;height:56px;background:var(--panel2);border-color:var(--line);box-shadow:0 5px 0 #0007;font-size:.8rem}
+.ab button:active{transform:translateY(3px)}
+#menu{position:absolute;inset:0;z-index:24;background:var(--cream);color:#3a2616;display:flex;flex-direction:column}
+#menu[hidden]{display:none}
+.tabs{display:flex;background:var(--wood);gap:2px;padding:6px 6px 0}
+.tabs button{flex:1;font:800 .85rem Figtree,sans-serif;background:#a67a4c;color:#fff;border:0;border-radius:9px 9px 0 0;padding:8px 2px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--cream);color:#3a2616}
+#mb{flex:1;overflow:auto;padding:10px}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between;background:#fff;border:2px solid #e2c89a;border-radius:11px;padding:7px 10px;margin-bottom:6px;font-size:1rem;font-weight:700}
+.row small{color:#6a4a2a;font-weight:600;display:block;font-size:.85rem}
+.row .e{font-size:1.6rem;margin-right:8px}
+.row .l{display:flex;align-items:center;min-width:0}
+.row button{font:800 .9rem Figtree,sans-serif;background:var(--coral);color:#fff;border:0;border-radius:9px;padding:7px 10px;cursor:pointer;flex:none}
+.row button:disabled{opacity:.4}
+.row.done{background:#e6f7e1;border-color:#8fd18f}
+.h4{font-family:Bungee,sans-serif;font-size:.8rem;margin:10px 0 6px;color:#c2412e}
+#mm{width:100%;image-rendering:pixelated;border:3px solid var(--wood);border-radius:10px}
+.pb{height:12px;background:#e8d5b0;border-radius:9px;overflow:hidden;border:2px solid var(--wood)}.pb i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--coral))}
+#fade{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;transition:opacity .6s;z-index:40}
+#title .ovc{background:linear-gradient(180deg,#ffe9b8,#ffcf8f)}
+.tt{font-family:Bungee,sans-serif;font-size:1.9rem;line-height:1.05;margin:0;color:#c2412e;text-wrap:balance}
+.hand{font-family:Caveat,cursive;font-size:1.35rem;margin:4px 0}
+.mini{font-size:.85rem;color:#7a5a3a}
+@media (max-width:380px){.dp{grid-template-columns:repeat(3,46px);grid-template-rows:repeat(3,46px)}.ab button{width:62px;height:62px}}
+@media (prefers-reduced-motion:reduce){.star{animation-duration:6s!important}#dn2{animation:none}}
+</style>
+
+<div class="wrap">
+  <div id="hud" role="status"><span id="hday">Day 1</span><span id="htime">6:00</span><span id="hcoin">🪙 0</span><span class="hr" id="hhr" title="Danoya's hearts"></span></div>
+  <div id="stage">
+    <canvas id="cv" width="320" height="384" aria-label="Danoya Valley game"></canvas>
+    <div id="goal"></div><div id="toast"></div>
+    <div id="dlg" hidden><div id="dn"></div><div id="dt"></div><div id="dc"></div><span id="dn2">▼</span></div>
+    <div id="menu" hidden><div class="tabs" id="tabs"></div><div id="mb"></div></div>
+    <div id="ov" hidden><div class="ovc" id="ovc"></div></div>
+    <div id="fade"></div>
+  </div>
+  <div id="ctl">
+    <div class="dp"><span></span><button data-d="0" aria-label="Up">▲</button><span></span><button data-d="3" aria-label="Left">◀</button><span></span><button data-d="1" aria-label="Right">▶</button><span></span><button data-d="2" aria-label="Down">▼</button><span></span></div>
+    <div class="ab"><button class="b" id="bb" type="button">Menu</button><button id="ba" type="button">A</button></div>
+  </div>
+  <p class="mini" style="text-align:center;margin:0">Arrow keys or WASD to walk · Space / E = A · Esc or Q = Menu</p>
+</div>

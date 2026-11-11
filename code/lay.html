@@ -1,0 +1,12 @@
+<style>
+html[data-lay="desktop"] body{padding-top:8px}
+html[data-lay="desktop"] .wrap{max-width:min(calc(100vw - 24px),calc((100vh - 112px)*10/12 + 6px))}
+@media (min-width:900px){html[data-lay="desktop"] .wrap{max-width:min(calc(100vw - 440px),calc((100vh - 112px)*10/12 + 6px))}}
+html[data-lay="desktop"] #ctl{display:none}
+html[data-lay="desktop"] .wrap>p.mini{font-size:.95rem}
+</style>
+<script>
+(function(){var l="auto";try{l=localStorage.getItem("dv_lay")||"auto"}catch(e){}
+if(l!=="phone"&&l!=="desktop"){l=(window.matchMedia&&matchMedia("(pointer:fine)").matches&&innerWidth>=900)?"desktop":"phone"}
+document.documentElement.setAttribute("data-lay",l)})();
+</script>
